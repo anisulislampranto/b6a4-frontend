@@ -1,4 +1,7 @@
+import { Button } from "@/components/ui/button";
 import AuthCard from "./AuthCard";
+import FormInput from "@/components/ui/FormInput";
+import { signUpFields } from "./config/authFields";
 
 export default function SignUpForm() {
     return (
@@ -6,16 +9,18 @@ export default function SignUpForm() {
             <AuthCard
                 title="Sign Up"
                 subtitle="Create your MediStore account"
-                fields={[
-                    { label: "Full Name", type: "text", placeholder: "John Doe", name: "fullName" },
-                    { label: "Email", type: "email", placeholder: "you@example.com", name: "email" },
-                    { label: "Password", type: "password", placeholder: "••••••••", name: "password" },
-                    { label: "Confirm Password", type: "password", placeholder: "••••••••", name: "confirmPassword" },
-                ]}
                 ctaText="Sign Up"
                 linkText="Already have an account?"
                 linkHref="/signin"
-            />
+            >
+                {signUpFields.map((field) => (
+                    <FormInput key={field.name} {...field} />
+                ))}
+
+                <Button className="w-full h-11 bg-emerald-600 hover:bg-emerald-700 shadow-md shadow-emerald-600/30">
+                    Sign Up
+                </Button>
+            </AuthCard>
         </div>
     )
 }
