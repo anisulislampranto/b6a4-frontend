@@ -1,50 +1,54 @@
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { Input } from "./input";
-import { Label } from "./label";
 
 interface FormInputProps {
     label: string;
     name: string;
     type?: string;
     placeholder?: string;
-    error?: string;
     hint?: string;
-    className?: string;
+    field?: any;
 }
 
 export default function FormInput({
     label,
-    name,
     type = "text",
     placeholder,
-    error,
     hint,
-    className,
+    field,
 }: FormInputProps) {
+    const errors = field?.state.meta.errors;
+
+    const errorMessage =
+        Array.isArray(errors) && errors.length
+            ? typeof errors[0] === "string"
+                ? errors[0]
+                : errors[0]?.message
+            : null;
+
     return (
         <div className="space-y-1">
-            <Label htmlFor={name} className="text-gray-700">
-                {label}
-            </Label>
+            <Label>{label}</Label>
 
             <Input
-                id={name}
-                name={name}
                 type={type}
                 placeholder={placeholder}
+                value={field?.state.value ?? ""}
+                onChange={(e) => field?.handleChange(e.target.value)}
+                onBlur={field?.handleBlur}
                 className={cn(
-                    "mt-1 focus-visible:ring-emerald-500",
-                    error && "border-red-500 focus-visible:ring-red-400",
-                    className
+                    "mt-1",
+                    errorMessage && "border-red-500 focus-visible:ring-red-500"
                 )}
             />
 
-            {hint && !error && (
+            {hint && !errorMessage && (
                 <p className="text-xs text-gray-400">{hint}</p>
             )}
 
-            {error && (
-                <p className="text-xs text-red-500">{error}</p>
+            {errorMessage && (
+                <p className="text-xs text-red-500">{errorMessage}</p>
             )}
         </div>
     );
