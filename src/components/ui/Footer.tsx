@@ -31,8 +31,8 @@ const Footer = ({
   logo = {
     src: "/logoBig-removebg-preview.png",
     alt: "Logo",
-    title: "Shadcnblocks.com",
-    url: "https://www.shadcnblocks.com",
+    title: "MediStore",
+    url: "/",
   },
   className,
   menuItems = [
@@ -88,7 +88,7 @@ const Footer = ({
           <div className="grid grid-cols-2 gap-8 lg:grid-cols-6">
             <div className="col-span-2 mb-8 lg:mb-0">
               <div className="flex items-center gap-2 lg:justify-start">
-                <Logo url="https://shadcnblocks.com">
+                <Logo url="/">
                   <LogoImage
                     src={logo.src}
                     alt={logo.alt}
