@@ -1,9 +1,7 @@
-import { Navbar } from "@/components/layout/navbar";
+import Homepage from "@/components/modules/homepage/homepage";
 
 export default function Home() {
   return (
-    <div className="max-w-7xl mx-auto px-4">
-      <Navbar />
-    </div>
+    <Homepage />
   );
 }
