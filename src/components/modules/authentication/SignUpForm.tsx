@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/button";
 import FormInput from "@/components/ui/FormInput";
 import { signUpFields } from "./config/authFields";
 import { signUpSchema, SignUpValues } from "./validation/auth.schema";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
 
 export default function SignUpForm() {
     const form = useForm({
         defaultValues: {
-            fullName: "",
+            name: "",
             email: "",
             password: "",
             confirmPassword: "",
@@ -19,8 +21,20 @@ export default function SignUpForm() {
             onChange: signUpSchema,
         },
         onSubmit: async ({ value }) => {
-            console.log("SIGN UP", value);
-        },
+            const toastId = toast.loading('Creating user!');
+            try {
+                const { data, error } = await authClient.signUp.email(value);
+
+                if (error) {
+                    toast.error(error.message, { id: toastId })
+                    return;
+                }
+
+                toast.success('User Created Successfully!', { id: toastId })
+            } catch (err) {
+                toast.error('Something went wrong please try again!', { id: toastId })
+            }
+        }
     });
 
     return (

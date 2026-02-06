@@ -27,7 +27,7 @@ export default function AuthCard({
 
                 {/* Left Branding */}
                 <div className="hidden md:flex flex-col justify-center px-12 py-16 bg-linear-to-br from-emerald-600 to-emerald-700 text-white text-center">
-                    <div className="bg-white/20 backdrop-blur-xl rounded-full flex justify-center items-center mx-auto p-6">
+                    <div className="bg-white backdrop-blur-xl rounded-full flex justify-center items-center mx-auto p-6">
                         <div className="relative w-40 h-40">
                             <Image
                                 src="/logoBig-removebg-preview.png"

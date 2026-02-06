@@ -1,7 +1,7 @@
 export const signUpFields = [
     {
-        label: "Full Name",
-        name: "fullName",
+        label: "Name",
+        name: "name",
         placeholder: "John Doe",
     },
     {
