@@ -6,6 +6,8 @@ import FormInput from "@/components/ui/FormInput";
 import { useForm } from "@tanstack/react-form";
 import { signInSchema, SignInValues } from "./validation/auth.schema";
 import { signInFields } from "./config/authFields";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
 
 export default function SignInForm() {
     const form = useForm({
@@ -17,8 +19,20 @@ export default function SignInForm() {
             onChange: signInSchema,
         },
         onSubmit: async ({ value }) => {
-            console.log("SIGN IN", value);
-        },
+            const toastId = toast.loading('Logging in!');
+            try {
+                const { data, error } = await authClient.signIn.email(value);
+
+                if (error) {
+                    toast.error(error.message, { id: toastId })
+                    return;
+                }
+
+                toast.success('User Logged in Successfully!', { id: toastId })
+            } catch (err) {
+                toast.error('Something went wrong please try again!', { id: toastId })
+            }
+        }
     });
 
     return (
@@ -53,7 +67,7 @@ export default function SignInForm() {
                                 disabled={!canSubmit}
                                 className="w-full h-11 bg-emerald-600 hover:bg-emerald-700"
                             >
-                                {isSubmitting ? "Creating..." : "Sign Up"}
+                                {isSubmitting ? "Signing in..." : "Sign In"}
                             </Button>
                         )}
                     </form.Subscribe>
