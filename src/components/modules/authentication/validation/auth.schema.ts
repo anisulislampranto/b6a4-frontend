@@ -12,6 +12,10 @@ export const signUpSchema = z
         password: z.string().min(8, "At least 8 characters"),
         confirmPassword: z.string(),
     })
+    .refine((data) => data.password === data.confirmPassword, {
+        path: ["confirmPassword"],
+        message: "Passwords do not match",
+    });
 
 export type SignInValues = z.infer<typeof signInSchema>;
 export type SignUpValues = z.infer<typeof signUpSchema>;
