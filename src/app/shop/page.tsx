@@ -1,9 +1,9 @@
-import ShopPage from "@/components/modules/shoppPage/shopPage";
+import ShopPageClient from "@/components/modules/shopPage/ShopPageClient";
 
-export default function page() {
+
+export default async function ShopPage() {
+
     return (
-        <div>
-            <ShopPage />
-        </div>
-    )
+        <ShopPageClient />
+    );
 }

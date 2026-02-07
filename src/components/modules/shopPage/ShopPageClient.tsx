@@ -10,7 +10,7 @@ const products = Array.from({ length: 8 }).map((_, i) => ({
     category: "Health",
 }));
 
-export default function ShopPage() {
+export default function ShopPageClient() {
     return (
         <div className="min-h-screen bg-linear-to-br from-emerald-50 via-white to-emerald-100 p-6">
             <div className="max-w-7xl mx-auto">
