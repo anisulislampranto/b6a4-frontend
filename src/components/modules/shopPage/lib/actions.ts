@@ -4,5 +4,5 @@ import { fetchMedicines, MedicineFilters } from "./api";
 
 
 export async function getMedicinesAction(filters: MedicineFilters) {
-    return fetchMedicines(filters);
+    return await fetchMedicines(filters);
 }
