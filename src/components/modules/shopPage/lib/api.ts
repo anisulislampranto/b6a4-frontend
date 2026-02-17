@@ -10,8 +10,6 @@ export interface MedicineFilters {
 
 export async function fetchMedicines(filters: MedicineFilters) {
     const params = new URLSearchParams(Object.entries(filters).filter(([_, v]) => v));
-
     const res = await fetch(`http://localhost:5000/api/medicines?${params.toString()}`, { cache: "no-store" });
-
     return await res.json();
 }
