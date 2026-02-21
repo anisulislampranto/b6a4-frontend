@@ -16,7 +16,6 @@ export default function Homepage() {
                 </div>
             </section>
 
-
             <section className="px-6 py-20 bg-white">
                 <h2 className="text-3xl font-semibold text-center text-emerald-700 mb-12">How MediStore Works</h2>
                 <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
