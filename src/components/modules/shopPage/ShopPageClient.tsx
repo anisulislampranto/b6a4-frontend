@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import FormInput from "@/components/ui/FormInput";
 import { Badge } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { getMedicinesAction } from "./lib/actions";
+import { medicineService } from "@/services/medicine.service";
 
 type MedicineItem = {
     id?: string;
@@ -31,7 +31,7 @@ export default function ShopPageClient() {
     const activeFilters = useMemo(
         () =>
             Object.fromEntries(
-                Object.entries(filters).filter(([_, v]) => v && v.toString().trim() !== "")
+                Object.entries(filters).filter(([, v]) => v && v.toString().trim() !== "")
             ),
         [filters]
     );
@@ -43,12 +43,12 @@ export default function ShopPageClient() {
             setLoading(true);
             setError(null);
             try {
-                const response = await getMedicinesAction(activeFilters);
+                const response = await medicineService.getMedicines(activeFilters);
 
                 if (!cancelled) {
                     setMedicines(response?.data?.items);
                 }
-            } catch (err) {
+            } catch {
                 if (!cancelled) {
                     setError("Failed to load medicines. Please try again.");
                 }
