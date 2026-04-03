@@ -1,3 +1,4 @@
+import { Roles } from "@/constants/roles";
 import { z } from "zod";
 
 export const signInSchema = z.object({
@@ -11,6 +12,7 @@ export const signUpSchema = z
         email: z.email("Enter a valid email"),
         password: z.string().min(8, "At least 8 characters"),
         confirmPassword: z.string(),
+        role: z.enum([Roles.CUSTOMER, Roles.SELLER]),
     })
     .refine((data) => data.password === data.confirmPassword, {
         path: ["confirmPassword"],
