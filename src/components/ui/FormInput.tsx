@@ -28,8 +28,8 @@ export default function FormInput({
             : null;
 
     return (
-        <div className="space-y-1">
-            <Label>{label}</Label>
+        <div className="space-y-1.5">
+            <Label className="text-sm font-semibold text-foreground/90">{label}</Label>
 
             <Input
                 type={type}
@@ -39,16 +39,16 @@ export default function FormInput({
                 onBlur={field?.handleBlur}
                 className={cn(
                     "mt-1",
-                    errorMessage && "border-red-500 focus-visible:ring-red-500"
+                    errorMessage && "border-red-500 focus-visible:border-red-500 focus-visible:ring-red-200"
                 )}
             />
 
             {hint && !errorMessage && (
-                <p className="text-xs text-gray-400">{hint}</p>
+                <p className="text-xs text-muted-foreground">{hint}</p>
             )}
 
             {errorMessage && (
-                <p className="text-xs text-red-500">{errorMessage}</p>
+                <p className="text-xs font-medium text-red-600">{errorMessage}</p>
             )}
         </div>
     );
