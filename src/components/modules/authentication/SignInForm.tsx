@@ -8,8 +8,11 @@ import { signInSchema, SignInValues } from "./validation/auth.schema";
 import { signInFields } from "./config/authFields";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function SignInForm() {
+    const router = useRouter();
+
     const form = useForm({
         defaultValues: {
             email: "",
@@ -29,6 +32,11 @@ export default function SignInForm() {
                 }
 
                 toast.success('User Logged in Successfully!', { id: toastId })
+                if (window.history.length > 1) {
+                    router.back();
+                    return;
+                }
+                router.push("/dashboard");
             } catch (err) {
                 toast.error('Something went wrong please try again!', { id: toastId })
             }

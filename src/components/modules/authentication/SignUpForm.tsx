@@ -10,8 +10,11 @@ import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { Roles } from "@/constants/roles";
+import { useRouter } from "next/navigation";
 
 export default function SignUpForm() {
+    const router = useRouter();
+
     const form = useForm({
         defaultValues: {
             name: "",
@@ -39,6 +42,11 @@ export default function SignUpForm() {
                 }
 
                 toast.success('User Created Successfully!', { id: toastId })
+                if (window.history.length > 1) {
+                    router.back();
+                    return;
+                }
+                router.push("/dashboard");
             } catch (err) {
                 toast.error('Something went wrong please try again!', { id: toastId })
             }
