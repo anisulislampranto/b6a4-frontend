@@ -1,8 +1,10 @@
 "use client";
 
 import { Menu } from "lucide-react";
+import { LogOut } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { authClient } from "@/lib/auth-client";
 
 import {
   Accordion,
@@ -13,7 +15,6 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
@@ -85,6 +86,18 @@ const Navbar = ({
   },
   className,
 }: Navbar1Props) => {
+  const { data: session, isPending } = authClient.useSession();
+  const user = session?.user;
+  const role = user?.role?.toUpperCase() || "CUSTOMER";
+  const userName = user?.name || "User";
+  const userEmail = user?.email || "";
+  const userInitial = userName.charAt(0).toUpperCase();
+  const isLoggedIn = !!user;
+
+  const handleLogout = async () => {
+    await authClient.signOut();
+  };
+
   return (
     <section className={cn("sticky top-0 z-40 border-b border-border/70 bg-background/80 backdrop-blur-xl", className)}>
       <div className="container mx-auto px-4 sm:px-6">
@@ -107,14 +120,42 @@ const Navbar = ({
               </NavigationMenu>
             </div>
           </div>
-          <div className="flex items-center gap-2.5">
-            <Button asChild variant="outline" size="sm">
-              <a href={auth.login.url}>{auth.login.title}</a>
-            </Button>
-            <Button asChild size="sm">
-              <a href={auth.signup.url}>{auth.signup.title}</a>
-            </Button>
-          </div>
+          {isPending ? (
+            <div className="h-10 w-56 animate-pulse rounded-xl border border-border/70 bg-muted/50" />
+          ) : isLoggedIn ? (
+            <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-3 rounded-2xl border border-emerald-100 bg-white/90 px-3 py-2 shadow-sm">
+                <div className="flex size-9 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">
+                  {userInitial}
+                </div>
+                <div className="max-w-44 leading-tight">
+                  <p className="truncate text-sm font-semibold text-foreground">{userName}</p>
+                  <p className="truncate text-xs text-muted-foreground">{userEmail}</p>
+                </div>
+                <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-emerald-700">
+                  {role}
+                </span>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="ml-1 inline-flex size-8 items-center justify-center rounded-full border border-emerald-200 text-emerald-700 transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-200"
+                  aria-label="Logout"
+                  title="Logout"
+                >
+                  <LogOut className="size-4" />
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2.5">
+              <Button asChild variant="outline" size="sm">
+                <a href={auth.login.url}>{auth.login.title}</a>
+              </Button>
+              <Button asChild size="sm">
+                <a href={auth.signup.url}>{auth.signup.title}</a>
+              </Button>
+            </div>
+          )}
         </nav>
 
         {/* Mobile Menu */}
@@ -155,14 +196,42 @@ const Navbar = ({
                     {menu.map((item) => renderMobileMenuItem(item))}
                   </Accordion>
 
-                  <div className="flex flex-col gap-3 border-t border-border/70 pt-6">
-                    <Button asChild variant="outline">
-                      <a href={auth.login.url}>{auth.login.title}</a>
-                    </Button>
-                    <Button asChild>
-                      <a href={auth.signup.url}>{auth.signup.title}</a>
-                    </Button>
-                  </div>
+                  {isPending ? (
+                    <div className="h-12 w-full animate-pulse rounded-xl border border-border/70 bg-muted/50" />
+                  ) : isLoggedIn ? (
+                    <div className="space-y-3 border-t border-border/70 pt-6">
+                      <div className="flex items-center gap-3 rounded-2xl border border-emerald-100 bg-white/90 px-3 py-3 shadow-sm">
+                        <div className="flex size-10 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">
+                          {userInitial}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-semibold text-foreground">{userName}</p>
+                          <p className="truncate text-xs text-muted-foreground">{userEmail}</p>
+                        </div>
+                        <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-emerald-700">
+                          {role}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={handleLogout}
+                          className="inline-flex size-8 items-center justify-center rounded-full border border-emerald-200 text-emerald-700 transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-200"
+                          aria-label="Logout"
+                          title="Logout"
+                        >
+                          <LogOut className="size-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-3 border-t border-border/70 pt-6">
+                      <Button asChild variant="outline">
+                        <a href={auth.login.url}>{auth.login.title}</a>
+                      </Button>
+                      <Button asChild>
+                        <a href={auth.signup.url}>{auth.signup.title}</a>
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </SheetContent>
             </Sheet>
