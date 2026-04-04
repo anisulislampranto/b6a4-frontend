@@ -1,6 +1,14 @@
 import SignUpForm from "@/components/modules/authentication/SignUpForm";
+import { userService } from "@/services/user.service";
+import { redirect } from "next/navigation";
+import { hasAuthenticatedUser } from "@/lib/session";
 
-export default function SignUpPage() {
+export default async function SignUpPage() {
+    const session = await userService.getSession();
+    if (hasAuthenticatedUser(session.data)) {
+        redirect("/dashboard");
+    }
+
     return (
         <SignUpForm />
     );
