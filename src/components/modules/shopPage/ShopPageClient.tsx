@@ -13,7 +13,7 @@ type MedicineItem = {
     price?: number | string;
     category?: string;
     brand?: string;
-    image?: string;
+    image?: string | null;
 };
 
 export default function ShopPageClient() {

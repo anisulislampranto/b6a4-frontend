@@ -1,4 +1,5 @@
 import { API_BASE_URL } from "./api-base";
+import { requestJSON } from "./http.service";
 
 export interface MedicineFilters {
     search?: string;
@@ -10,13 +11,28 @@ export interface MedicineFilters {
     limit?: string;
 }
 
+interface MedicineListItem {
+    id: string;
+    name: string;
+    price: number;
+    image?: string | null;
+}
+
+interface MedicineListResponse {
+    data: {
+        items: MedicineListItem[];
+        total: number;
+        page: number;
+        totalPages: number;
+    };
+    message?: string;
+}
+
 const getMedicines = async (filters: MedicineFilters) => {
     const params = new URLSearchParams(Object.entries(filters).filter(([, v]) => v));
-    const res = await fetch(`${API_BASE_URL}/medicines?${params.toString()}`, {
+    return requestJSON<MedicineListResponse>(`${API_BASE_URL}/medicines?${params.toString()}`, {
         cache: "no-store",
     });
-
-    return await res.json();
 };
 
 export const medicineService = {

@@ -1,4 +1,5 @@
 import { API_BASE_URL } from "./api-base";
+import { requestJSON, requestJSONWithStatus } from "./http.service";
 
 export interface OptionItem {
     id: string;
@@ -15,44 +16,49 @@ export interface CreateMedicinePayload {
     brandId: string;
 }
 
+interface ListResponse<T> {
+    data: T[];
+    message?: string;
+}
+
+interface MutateResponse<T> {
+    data?: T;
+    message?: string;
+}
+
 const getCategories = async () => {
-    const res = await fetch(`${API_BASE_URL}/category`, { cache: "no-store" });
-    return res.json();
+    return requestJSON<ListResponse<OptionItem>>(`${API_BASE_URL}/category`, { cache: "no-store" });
 };
 
 const getBrands = async () => {
-    const res = await fetch(`${API_BASE_URL}/brands`, { cache: "no-store" });
-    return res.json();
+    return requestJSON<ListResponse<OptionItem>>(`${API_BASE_URL}/brands`, { cache: "no-store" });
 };
 
 const createCategory = async (name: string) => {
-    const res = await fetch(`${API_BASE_URL}/category`, {
+    return requestJSONWithStatus<MutateResponse<OptionItem>>(`${API_BASE_URL}/category`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ name }),
     });
-    return res.json().then((data) => ({ ok: res.ok, data }));
 };
 
 const createBrand = async (name: string) => {
-    const res = await fetch(`${API_BASE_URL}/brands`, {
+    return requestJSONWithStatus<MutateResponse<OptionItem>>(`${API_BASE_URL}/brands`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ name }),
     });
-    return res.json().then((data) => ({ ok: res.ok, data }));
 };
 
 const createMedicine = async (payload: CreateMedicinePayload) => {
-    const res = await fetch(`${API_BASE_URL}/medicines`, {
+    return requestJSONWithStatus<MutateResponse<unknown>>(`${API_BASE_URL}/medicines`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify(payload),
     });
-    return res.json().then((data) => ({ ok: res.ok, data }));
 };
 
 export const inventoryService = {
