@@ -6,11 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
-interface OptionItem {
-    id: string;
-    name: string;
-}
+import { inventoryService, OptionItem } from "@/services/inventory.service";
 
 interface FormState {
     name: string;
@@ -21,6 +17,8 @@ interface FormState {
     categoryId: string;
     brandId: string;
 }
+
+const CREATE_NEW_OPTION = "__create_new__";
 
 const initialForm: FormState = {
     name: "",
@@ -38,6 +36,12 @@ export default function AddMedicineClient() {
     const [categories, setCategories] = useState<OptionItem[]>([]);
     const [brands, setBrands] = useState<OptionItem[]>([]);
     const [loadingOptions, setLoadingOptions] = useState(true);
+    const [creatingCategory, setCreatingCategory] = useState(false);
+    const [creatingBrand, setCreatingBrand] = useState(false);
+    const [newCategoryName, setNewCategoryName] = useState("");
+    const [newBrandName, setNewBrandName] = useState("");
+    const [categorySelectValue, setCategorySelectValue] = useState("");
+    const [brandSelectValue, setBrandSelectValue] = useState("");
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
@@ -50,19 +54,14 @@ export default function AddMedicineClient() {
             setError(null);
             try {
                 const [categoryRes, brandRes] = await Promise.all([
-                    fetch("http://localhost:5000/api/category", { cache: "no-store" }),
-                    fetch("http://localhost:5000/api/brands", { cache: "no-store" }),
-                ]);
-
-                const [categoryJson, brandJson] = await Promise.all([
-                    categoryRes.json(),
-                    brandRes.json(),
+                    inventoryService.getCategories(),
+                    inventoryService.getBrands(),
                 ]);
 
                 if (cancelled) return;
 
-                const categoryItems = (categoryJson?.data || []) as OptionItem[];
-                const brandItems = (brandJson?.data || []) as OptionItem[];
+                const categoryItems = (categoryRes?.data || []) as OptionItem[];
+                const brandItems = (brandRes?.data || []) as OptionItem[];
                 setCategories(categoryItems);
                 setBrands(brandItems);
                 setForm((prev) => ({
@@ -70,6 +69,8 @@ export default function AddMedicineClient() {
                     categoryId: prev.categoryId || categoryItems[0]?.id || "",
                     brandId: prev.brandId || brandItems[0]?.id || "",
                 }));
+                setCategorySelectValue((prev) => prev || categoryItems[0]?.id || CREATE_NEW_OPTION);
+                setBrandSelectValue((prev) => prev || brandItems[0]?.id || CREATE_NEW_OPTION);
             } catch {
                 if (!cancelled) setError("Failed to load category/brand options.");
             } finally {
@@ -91,6 +92,80 @@ export default function AddMedicineClient() {
             (value: string) =>
                 setForm((prev) => ({ ...prev, [key]: value }));
 
+    const handleCategoryChange = (value: string) => {
+        setCategorySelectValue(value);
+        if (value === CREATE_NEW_OPTION) return;
+        updateField("categoryId")(value);
+    };
+
+    const handleBrandChange = (value: string) => {
+        setBrandSelectValue(value);
+        if (value === CREATE_NEW_OPTION) return;
+        updateField("brandId")(value);
+    };
+
+    const createCategory = async () => {
+        const trimmed = newCategoryName.trim();
+        if (!trimmed) {
+            setError("Please enter a category name.");
+            return;
+        }
+
+        setCreatingCategory(true);
+        setError(null);
+        try {
+            const { ok, data } = await inventoryService.createCategory(trimmed);
+            if (!ok) {
+                setError(data?.message || "Failed to create category.");
+                return;
+            }
+
+            const created = data?.data as OptionItem;
+            if (created?.id) {
+                setCategories((prev) => [created, ...prev]);
+                updateField("categoryId")(created.id);
+                setCategorySelectValue(created.id);
+                setNewCategoryName("");
+                setSuccess("Category created successfully!");
+            }
+        } catch {
+            setError("Something went wrong while creating category.");
+        } finally {
+            setCreatingCategory(false);
+        }
+    };
+
+    const createBrand = async () => {
+        const trimmed = newBrandName.trim();
+        if (!trimmed) {
+            setError("Please enter a brand name.");
+            return;
+        }
+
+        setCreatingBrand(true);
+        setError(null);
+        try {
+            const { ok, data } = await inventoryService.createBrand(trimmed);
+            if (!ok) {
+                setError(data?.message || "Failed to create brand.");
+                return;
+            }
+
+            const created = data?.data as OptionItem;
+            if (created?.id) {
+                setBrands((prev) => [created, ...prev]);
+                updateField("brandId")(created.id);
+                setBrandSelectValue(created.id);
+                setNewBrandName("");
+                setSuccess("Brand created successfully!");
+            }
+        } catch {
+            setError("Something went wrong while creating brand.");
+        } finally {
+            setCreatingBrand(false);
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setError(null);
@@ -103,25 +178,16 @@ export default function AddMedicineClient() {
 
         setSubmitting(true);
         try {
-            const res = await fetch("http://localhost:5000/api/medicines", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: "include",
-                body: JSON.stringify({
-                    name: form.name,
-                    description: form.description,
-                    price: Number(form.price),
-                    stock: Number(form.stock),
-                    image: form.image,
-                    categoryId: form.categoryId,
-                    brandId: form.brandId,
-                }),
+            const { ok, data } = await inventoryService.createMedicine({
+                name: form.name,
+                description: form.description,
+                price: Number(form.price),
+                stock: Number(form.stock),
+                image: form.image,
+                categoryId: form.categoryId,
+                brandId: form.brandId,
             });
-
-            const data = await res.json();
-            if (!res.ok) {
+            if (!ok) {
                 setError(data?.message || "Failed to add medicine.");
                 return;
             }
@@ -209,9 +275,9 @@ export default function AddMedicineClient() {
                         <div className="space-y-1.5">
                             <Label>Category *</Label>
                             <select
-                                value={form.categoryId}
+                                value={categorySelectValue}
                                 disabled={loadingOptions}
-                                onChange={(e) => updateField("categoryId")(e.target.value)}
+                                onChange={(e) => handleCategoryChange(e.target.value)}
                                 className="h-11 w-full rounded-xl border border-border bg-card px-3.5 text-sm outline-none transition focus-visible:ring-4 focus-visible:ring-ring/30"
                             >
                                 {categories.map((category) => (
@@ -219,15 +285,34 @@ export default function AddMedicineClient() {
                                         {category.name}
                                     </option>
                                 ))}
+                                <option value={CREATE_NEW_OPTION}>+ Create new category</option>
                             </select>
+                            {categorySelectValue === CREATE_NEW_OPTION && (
+                                <div className="mt-2 flex items-center gap-2">
+                                    <Input
+                                        value={newCategoryName}
+                                        onChange={(e) => setNewCategoryName(e.target.value)}
+                                        placeholder="New category name"
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        className="border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+                                        disabled={creatingCategory}
+                                        onClick={createCategory}
+                                    >
+                                        {creatingCategory ? "Adding..." : "Add"}
+                                    </Button>
+                                </div>
+                            )}
                         </div>
 
                         <div className="space-y-1.5">
                             <Label>Brand *</Label>
                             <select
-                                value={form.brandId}
+                                value={brandSelectValue}
                                 disabled={loadingOptions}
-                                onChange={(e) => updateField("brandId")(e.target.value)}
+                                onChange={(e) => handleBrandChange(e.target.value)}
                                 className="h-11 w-full rounded-xl border border-border bg-card px-3.5 text-sm outline-none transition focus-visible:ring-4 focus-visible:ring-ring/30"
                             >
                                 {brands.map((brand) => (
@@ -235,7 +320,26 @@ export default function AddMedicineClient() {
                                         {brand.name}
                                     </option>
                                 ))}
+                                <option value={CREATE_NEW_OPTION}>+ Create new brand</option>
                             </select>
+                            {brandSelectValue === CREATE_NEW_OPTION && (
+                                <div className="mt-2 flex items-center gap-2">
+                                    <Input
+                                        value={newBrandName}
+                                        onChange={(e) => setNewBrandName(e.target.value)}
+                                        placeholder="New brand name"
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        className="border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+                                        disabled={creatingBrand}
+                                        onClick={createBrand}
+                                    >
+                                        {creatingBrand ? "Adding..." : "Add"}
+                                    </Button>
+                                </div>
+                            )}
                         </div>
 
                         <div className="space-y-1.5 sm:col-span-2">

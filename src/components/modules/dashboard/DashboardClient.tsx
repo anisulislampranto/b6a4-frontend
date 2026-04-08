@@ -97,6 +97,13 @@ export default function DashboardClient() {
                 </div>
                 <h1 className="text-3xl font-bold text-emerald-700 sm:text-4xl">{content.title}</h1>
                 <p className="mt-2 max-w-3xl text-muted-foreground">{content.subtitle}</p>
+                {(role === "SELLER" || role === "ADMIN") && (
+                    <div className="mt-5">
+                        <Button asChild className="bg-emerald-600 hover:bg-emerald-700">
+                            <Link href="/seller/medicines">Add Medicine</Link>
+                        </Button>
+                    </div>
+                )}
             </section>
 
             <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
