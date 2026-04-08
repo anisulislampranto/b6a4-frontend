@@ -28,7 +28,7 @@ const roleContent: Record<
         title: "Seller Dashboard",
         subtitle: "Manage medicine inventory, incoming orders, and stock updates.",
         panels: [
-            { title: "Inventory", description: "Add, edit, and remove your medicine listings.", href: "/seller/medicines" },
+            { title: "Inventory", description: "Add, edit, and remove your medicine listings.", href: "/seller/inventory" },
             { title: "Seller Orders", description: "View new orders and update order statuses.", href: "/seller/orders" },
             { title: "Seller Overview", description: "See daily activity and stock visibility.", href: "/seller/dashboard" },
         ],

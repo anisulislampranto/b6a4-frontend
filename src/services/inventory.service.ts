@@ -26,6 +26,23 @@ interface MutateResponse<T> {
     message?: string;
 }
 
+interface MyMedicineItem {
+    id: string;
+    name: string;
+    description?: string | null;
+    price: number;
+    stock: number;
+    image?: string | null;
+    isActive: boolean;
+    category: OptionItem;
+    brand: OptionItem;
+}
+
+interface MyMedicinesResponse {
+    data: MyMedicineItem[];
+    message?: string;
+}
+
 const getCategories = async () => {
     return requestJSON<ListResponse<OptionItem>>(`${API_BASE_URL}/category`, { cache: "no-store" });
 };
@@ -61,10 +78,19 @@ const createMedicine = async (payload: CreateMedicinePayload) => {
     });
 };
 
+const getMyMedicines = async () => {
+    return requestJSONWithStatus<MyMedicinesResponse>(`${API_BASE_URL}/medicines/my`, {
+        method: "GET",
+        credentials: "include",
+        cache: "no-store",
+    });
+};
+
 export const inventoryService = {
     getCategories,
     getBrands,
     createCategory,
     createBrand,
     createMedicine,
+    getMyMedicines,
 };

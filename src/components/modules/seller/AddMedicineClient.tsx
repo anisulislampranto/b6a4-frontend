@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { inventoryService, OptionItem } from "@/services/inventory.service";
+import { useRouter } from "next/navigation";
 
 interface FormState {
     name: string;
@@ -31,6 +32,7 @@ const initialForm: FormState = {
 };
 
 export default function AddMedicineClient() {
+    const router = useRouter();
     const { data: session, isPending: sessionPending } = authClient.useSession();
     const [form, setForm] = useState<FormState>(initialForm);
     const [categories, setCategories] = useState<OptionItem[]>([]);
@@ -198,6 +200,9 @@ export default function AddMedicineClient() {
                 categoryId: prev.categoryId,
                 brandId: prev.brandId,
             }));
+            setTimeout(() => {
+                router.push("/seller/inventory");
+            }, 500);
         } catch {
             setError("Something went wrong while adding medicine.");
         } finally {
