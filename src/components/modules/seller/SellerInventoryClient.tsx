@@ -6,6 +6,17 @@ import { authClient } from "@/lib/auth-client";
 import { inventoryService } from "@/services/inventory.service";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 import type { MedicineWithRelations } from "@/types/medicine.type";
 
 export default function SellerInventoryClient() {
@@ -13,43 +24,60 @@ export default function SellerInventoryClient() {
     const [items, setItems] = useState<MedicineWithRelations[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [updatingId, setUpdatingId] = useState<string | null>(null);
 
     const role = session?.user?.role?.toUpperCase();
     const canManage = role === "SELLER" || role === "ADMIN";
 
-    useEffect(() => {
-        let cancelled = false;
+    const loadInventory = async (cancelled = false) => {
+        if (!session?.user || !canManage) {
+            setLoading(false);
+            return;
+        }
 
-        const load = async () => {
-            if (!session?.user || !canManage) {
-                setLoading(false);
+        setLoading(true);
+        setError(null);
+        try {
+            const { ok, data } = await inventoryService.getMyMedicines();
+            if (!ok) {
+                if (!cancelled) setError(data?.message || "Failed to load medicines.");
                 return;
             }
 
-            setLoading(true);
-            setError(null);
-            try {
-                const { ok, data } = await inventoryService.getMyMedicines();
-                if (!ok) {
-                    if (!cancelled) setError(data?.message || "Failed to load medicines.");
-                    return;
-                }
-
-                if (!cancelled) {
-                    setItems((data?.data || []) as MedicineWithRelations[]);
-                }
-            } catch {
-                if (!cancelled) setError("Something went wrong while loading inventory.");
-            } finally {
-                if (!cancelled) setLoading(false);
+            if (!cancelled) {
+                setItems((data?.data || []) as MedicineWithRelations[]);
             }
-        };
+        } catch {
+            if (!cancelled) setError("Something went wrong while loading inventory.");
+        } finally {
+            if (!cancelled) setLoading(false);
+        }
+    };
 
-        load();
+    useEffect(() => {
+        let cancelled = false;
+        loadInventory(cancelled);
         return () => {
             cancelled = true;
         };
     }, [session?.user, canManage]);
+
+    const handleUpdateStock = async (id: string, newStock: number) => {
+        setUpdatingId(id);
+        try {
+            const { ok, data } = await inventoryService.updateMedicine(id, { stock: newStock });
+            if (ok) {
+                toast.success("Stock updated successfully!");
+                setItems(prev => prev.map(item => item.id === id ? { ...item, stock: newStock } : item));
+            } else {
+                toast.error(data?.message || "Failed to update stock");
+            }
+        } catch {
+            toast.error("An error occurred while updating stock");
+        } finally {
+            setUpdatingId(null);
+        }
+    };
 
     if (sessionPending) {
         return (
@@ -132,12 +160,57 @@ export default function SellerInventoryClient() {
                                     <p className="text-lg font-bold text-emerald-700">${item.price}</p>
                                     <p className="text-sm font-medium text-muted-foreground">Stock: {item.stock}</p>
                                 </div>
-                                <span className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${item.isActive
-                                    ? "border border-emerald-200 bg-emerald-50 text-emerald-700"
-                                    : "border border-red-200 bg-red-50 text-red-600"
-                                    }`}>
-                                    {item.isActive ? "Active" : "Inactive"}
-                                </span>
+                                <div className="flex items-center justify-between">
+                                    <span className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${item.isActive
+                                        ? "border border-emerald-200 bg-emerald-50 text-emerald-700"
+                                        : "border border-red-200 bg-red-50 text-red-600"
+                                        }`}>
+                                        {item.isActive ? "Active" : "Inactive"}
+                                    </span>
+
+                                    <Sheet>
+                                        <SheetTrigger asChild>
+                                            <Button variant="outline" size="sm" className="h-8 border-emerald-200 text-emerald-700 hover:bg-emerald-50">
+                                                Manage Stock
+                                            </Button>
+                                        </SheetTrigger>
+                                        <SheetContent>
+                                            <SheetHeader>
+                                                <SheetTitle>Update Stock</SheetTitle>
+                                                <SheetDescription>
+                                                    Update the available quantity for <strong>{item.name}</strong>.
+                                                </SheetDescription>
+                                            </SheetHeader>
+                                            <div className="grid gap-4 py-4">
+                                                <div className="space-y-2">
+                                                    <Label htmlFor="stock">Available Quantity</Label>
+                                                    <Input
+                                                        id="stock"
+                                                        type="number"
+                                                        defaultValue={item.stock}
+                                                        onChange={(e) => {
+                                                            const val = parseInt(e.target.value);
+                                                            if (!isNaN(val)) {
+                                                                (e.target as any)._val = val;
+                                                            }
+                                                        }}
+                                                    />
+                                                </div>
+                                                <Button
+                                                    className="w-full bg-emerald-600 hover:bg-emerald-700"
+                                                    disabled={updatingId === item.id}
+                                                    onClick={(e) => {
+                                                        const input = (e.currentTarget.parentElement as HTMLElement).querySelector('input');
+                                                        const stock = parseInt(input?.value || "0");
+                                                        handleUpdateStock(item.id, stock);
+                                                    }}
+                                                >
+                                                    {updatingId === item.id ? "Updating..." : "Update Stock"}
+                                                </Button>
+                                            </div>
+                                        </SheetContent>
+                                    </Sheet>
+                                </div>
                             </CardContent>
                         </Card>
                     ))}

@@ -60,6 +60,15 @@ const getMyMedicines = async () => {
     });
 };
 
+const updateMedicine = async (id: string, payload: Partial<CreateMedicinePayload>) => {
+    return requestJSONWithStatus<ApiMutationResponse>(`${API_BASE_URL}/medicines/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+    });
+};
+
 export const inventoryService = {
     getCategories,
     getBrands,
@@ -67,4 +76,5 @@ export const inventoryService = {
     createBrand,
     createMedicine,
     getMyMedicines,
+    updateMedicine,
 };
