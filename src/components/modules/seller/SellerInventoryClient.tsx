@@ -156,7 +156,7 @@ export default function SellerInventoryClient() {
                 <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
                     {items.map((item) => (
                         <Card key={item.id} className="rounded-2xl border-border/70 bg-card/95">
-                            <CardContent className="space-y-3 p-6">
+                            <CardContent className="space-y-3 px-6">
                                 <h2 className="text-xl font-semibold text-foreground">{item.name}</h2>
                                 <p className="text-sm text-muted-foreground">
                                     Category: <span className="font-medium text-foreground">{item.category?.name}</span>
