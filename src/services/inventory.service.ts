@@ -1,10 +1,9 @@
+import type { MedicineWithRelations } from "@/types/medicine.type";
+import type { Category } from "@/types/category.type";
+import type { Brand } from "@/types/brand.type";
+import type { ApiListResponse, ApiMutationResponse } from "@/types/api.type";
 import { API_BASE_URL } from "./api-base";
 import { requestJSON, requestJSONWithStatus } from "./http.service";
-
-export interface OptionItem {
-    id: string;
-    name: string;
-}
 
 export interface CreateMedicinePayload {
     name: string;
@@ -16,43 +15,18 @@ export interface CreateMedicinePayload {
     brandId: string;
 }
 
-interface ListResponse<T> {
-    data: T[];
-    message?: string;
-}
-
-interface MutateResponse<T> {
-    data?: T;
-    message?: string;
-}
-
-interface MyMedicineItem {
-    id: string;
-    name: string;
-    description?: string | null;
-    price: number;
-    stock: number;
-    image?: string | null;
-    isActive: boolean;
-    category: OptionItem;
-    brand: OptionItem;
-}
-
-interface MyMedicinesResponse {
-    data: MyMedicineItem[];
-    message?: string;
-}
+export type OptionItem = Pick<Category | Brand, "id" | "name">;
 
 const getCategories = async () => {
-    return requestJSON<ListResponse<OptionItem>>(`${API_BASE_URL}/category`, { cache: "no-store" });
+    return requestJSON<ApiListResponse<Category>>(`${API_BASE_URL}/category`, { cache: "no-store" });
 };
 
 const getBrands = async () => {
-    return requestJSON<ListResponse<OptionItem>>(`${API_BASE_URL}/brands`, { cache: "no-store" });
+    return requestJSON<ApiListResponse<Brand>>(`${API_BASE_URL}/brands`, { cache: "no-store" });
 };
 
 const createCategory = async (name: string) => {
-    return requestJSONWithStatus<MutateResponse<OptionItem>>(`${API_BASE_URL}/category`, {
+    return requestJSONWithStatus<ApiMutationResponse<Category>>(`${API_BASE_URL}/category`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -61,7 +35,7 @@ const createCategory = async (name: string) => {
 };
 
 const createBrand = async (name: string) => {
-    return requestJSONWithStatus<MutateResponse<OptionItem>>(`${API_BASE_URL}/brands`, {
+    return requestJSONWithStatus<ApiMutationResponse<Brand>>(`${API_BASE_URL}/brands`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -70,7 +44,7 @@ const createBrand = async (name: string) => {
 };
 
 const createMedicine = async (payload: CreateMedicinePayload) => {
-    return requestJSONWithStatus<MutateResponse<unknown>>(`${API_BASE_URL}/medicines`, {
+    return requestJSONWithStatus<ApiMutationResponse>(`${API_BASE_URL}/medicines`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -79,7 +53,7 @@ const createMedicine = async (payload: CreateMedicinePayload) => {
 };
 
 const getMyMedicines = async () => {
-    return requestJSONWithStatus<MyMedicinesResponse>(`${API_BASE_URL}/medicines/my`, {
+    return requestJSONWithStatus<ApiListResponse<MedicineWithRelations>>(`${API_BASE_URL}/medicines/my`, {
         method: "GET",
         credentials: "include",
         cache: "no-store",

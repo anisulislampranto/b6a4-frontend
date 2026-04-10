@@ -3,18 +3,9 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import FormInput from "@/components/ui/FormInput";
-import { Badge } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { medicineService } from "@/services/medicine.service";
-
-type MedicineItem = {
-    id?: string;
-    name?: string;
-    price?: number | string;
-    category?: string;
-    brand?: string;
-    image?: string | null;
-};
+import type { MedicineWithRelations } from "@/types/medicine.type";
 
 export default function ShopPageClient() {
     const [filters, setFilters] = useState({
@@ -24,7 +15,7 @@ export default function ShopPageClient() {
         minPrice: "",
         maxPrice: "",
     });
-    const [medicines, setMedicines] = useState<MedicineItem[]>([]);
+    const [medicines, setMedicines] = useState<MedicineWithRelations[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -131,22 +122,24 @@ export default function ShopPageClient() {
                             No medicines found.
                         </div>
                     )}
-                    {medicines?.map((p, index) => (
-                        <Card key={p.id ?? index} className="group overflow-hidden rounded-2xl border-border/70 bg-card/95 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_30px_-24px_rgba(15,23,42,0.9)]">
+                    {medicines?.map((p) => (
+                        <Card key={p.id} className="group overflow-hidden rounded-2xl border-border/70 bg-card/95 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_30px_-24px_rgba(15,23,42,0.9)]">
                             <CardContent className="flex flex-col gap-4 p-5">
                                 <div className="flex h-36 items-center justify-center rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-100 to-emerald-50 text-sm font-bold tracking-wide text-emerald-600">
-                                    IMG
+                                    {p.image ? (
+                                        <img src={p.image} alt={p.name} className="h-full w-full rounded-2xl object-cover" />
+                                    ) : (
+                                        "IMG"
+                                    )}
                                 </div>
-                                <h3 className="text-base font-semibold text-foreground">{p.name ?? `Medicine ${index + 1}`}</h3>
-                                {p.category && (
-                                    <Badge className="w-fit rounded-full border border-emerald-200 bg-emerald-100 p-1 text-emerald-700">{p.category}</Badge>
-                                )}
-                                {p.brand && (
-                                    <span className="text-xs font-medium text-emerald-700/85">Brand: {p.brand}</span>
-                                )}
-                                {p.price !== undefined && (
-                                    <p className="text-xl font-bold text-emerald-700">${p.price}</p>
-                                )}
+                                <h3 className="text-base font-semibold text-foreground">{p.name}</h3>
+                                <span className="w-fit rounded-full border border-emerald-200 bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700">
+                                    {p.category.name}
+                                </span>
+                                <span className="text-xs font-medium text-muted-foreground">
+                                    Brand: <span className="text-foreground">{p.brand.name}</span>
+                                </span>
+                                <p className="text-xl font-bold text-emerald-700">${p.price}</p>
                                 <Button className="bg-emerald-600 hover:bg-emerald-700">Add to Cart</Button>
                             </CardContent>
                         </Card>

@@ -6,20 +6,11 @@ import { authClient } from "@/lib/auth-client";
 import { inventoryService } from "@/services/inventory.service";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-
-interface InventoryMedicine {
-    id: string;
-    name: string;
-    price: number;
-    stock: number;
-    isActive: boolean;
-    category: { name: string };
-    brand: { name: string };
-}
+import type { MedicineWithRelations } from "@/types/medicine.type";
 
 export default function SellerInventoryClient() {
     const { data: session, isPending: sessionPending } = authClient.useSession();
-    const [items, setItems] = useState<InventoryMedicine[]>([]);
+    const [items, setItems] = useState<MedicineWithRelations[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -45,7 +36,7 @@ export default function SellerInventoryClient() {
                 }
 
                 if (!cancelled) {
-                    setItems((data?.data || []) as InventoryMedicine[]);
+                    setItems((data?.data || []) as MedicineWithRelations[]);
                 }
             } catch {
                 if (!cancelled) setError("Something went wrong while loading inventory.");
