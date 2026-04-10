@@ -68,7 +68,7 @@ export default function SellerInventoryClient() {
         return () => {
             cancelled = true;
         };
-    }, [session?.user, canManage]);
+    }, [session?.user?.id, canManage]);
 
     const handleUpdateStock = async (id: string, newStock: number) => {
         setUpdatingId(id);
