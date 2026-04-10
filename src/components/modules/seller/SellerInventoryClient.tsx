@@ -17,6 +17,14 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import {
+    Plus,
+    Minus,
+    Package2,
+    CheckCircle2,
+    X
+} from "lucide-react";
+import { SheetFooter, SheetClose } from "@/components/ui/sheet";
 import type { MedicineWithRelations } from "@/types/medicine.type";
 
 export default function SellerInventoryClient() {
@@ -170,44 +178,128 @@ export default function SellerInventoryClient() {
 
                                     <Sheet>
                                         <SheetTrigger asChild>
-                                            <Button variant="outline" size="sm" className="h-8 border-emerald-200 text-emerald-700 hover:bg-emerald-50">
+                                            <Button variant="outline" size="sm" className="h-8 gap-1.5 border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800">
+                                                <Package2 className="h-3.5 w-3.5" />
                                                 Manage Stock
                                             </Button>
                                         </SheetTrigger>
-                                        <SheetContent>
-                                            <SheetHeader>
-                                                <SheetTitle>Update Stock</SheetTitle>
-                                                <SheetDescription>
-                                                    Update the available quantity for <strong>{item.name}</strong>.
-                                                </SheetDescription>
-                                            </SheetHeader>
-                                            <div className="grid gap-4 py-4">
-                                                <div className="space-y-2">
-                                                    <Label htmlFor="stock">Available Quantity</Label>
-                                                    <Input
-                                                        id="stock"
-                                                        type="number"
-                                                        defaultValue={item.stock}
-                                                        onChange={(e) => {
-                                                            const val = parseInt(e.target.value);
-                                                            if (!isNaN(val)) {
-                                                                (e.target as any)._val = val;
-                                                            }
-                                                        }}
-                                                    />
+                                        <SheetContent className="flex flex-col border-l-emerald-100 sm:max-w-md">
+                                            <SheetHeader className="space-y-3 pb-6 border-b">
+                                                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600">
+                                                    <Package2 className="h-6 w-6" />
                                                 </div>
+                                                <div>
+                                                    <SheetTitle className="text-2xl font-bold text-foreground">Manage Inventory</SheetTitle>
+                                                    <SheetDescription className="text-emerald-700/70 font-medium">
+                                                        Updating stock for <span className="text-emerald-900 font-bold underline decoration-emerald-300 underline-offset-4">{item.name}</span>
+                                                    </SheetDescription>
+                                                </div>
+                                            </SheetHeader>
+
+                                            <div className="flex-1 overflow-y-auto px-4 space-y-8">
+                                                {/* Product Summary Card */}
+                                                <div className="rounded-2xl border border-emerald-100 bg-emerald-50/50 p-4 space-y-3">
+                                                    <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-800/60">Product Summary</h4>
+                                                    <div className="grid grid-cols-2 gap-4">
+                                                        <div>
+                                                            <p className="text-xs text-muted-foreground">Category</p>
+                                                            <p className="text-sm font-semibold">{item.category?.name}</p>
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-xs text-muted-foreground">Price</p>
+                                                            <p className="text-sm font-semibold text-emerald-700">${item.price}</p>
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-xs text-muted-foreground">Current Stock</p>
+                                                            <p className="text-sm font-semibold">{item.stock} units</p>
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-xs text-muted-foreground">Status</p>
+                                                            <div className="flex items-center gap-1.5">
+                                                                <div className={`h-2 w-2 rounded-full ${item.isActive ? "bg-emerald-500" : "bg-red-500"}`} />
+                                                                <p className="text-sm font-semibold">{item.isActive ? "Active" : "Inactive"}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Stock Adjustment Section */}
+                                                <div className="space-y-4">
+                                                    <Label htmlFor={`stock-${item.id}`} className="text-base font-bold text-foreground">
+                                                        Adjust Stock Quantity
+                                                    </Label>
+                                                    <div className="flex items-center gap-3">
+                                                        <Button
+                                                            variant="outline"
+                                                            size="icon"
+                                                            className="h-12 w-12 rounded-xl border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+                                                            onClick={(e) => {
+                                                                const input = e.currentTarget.parentElement?.querySelector('input');
+                                                                if (input) {
+                                                                    const newVal = Math.max(0, parseInt(input.value || "0") - 1);
+                                                                    input.value = newVal.toString();
+                                                                }
+                                                            }}
+                                                        >
+                                                            <Minus className="h-5 w-5" />
+                                                        </Button>
+                                                        <Input
+                                                            id={`stock-${item.id}`}
+                                                            type="number"
+                                                            defaultValue={item.stock}
+                                                            className="h-12 border-emerald-100 text-center text-lg font-bold focus-visible:ring-emerald-500/20"
+                                                            min="0"
+                                                        />
+                                                        <Button
+                                                            variant="outline"
+                                                            size="icon"
+                                                            className="h-12 w-12 rounded-xl border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+                                                            onClick={(e) => {
+                                                                const input = e.currentTarget.parentElement?.querySelector('input');
+                                                                if (input) {
+                                                                    const newVal = parseInt(input.value || "0") + 1;
+                                                                    input.value = newVal.toString();
+                                                                }
+                                                            }}
+                                                        >
+                                                            <Plus className="h-5 w-5" />
+                                                        </Button>
+                                                    </div>
+                                                    <p className="text-[13px] leading-relaxed text-muted-foreground">
+                                                        This value will be visible to customers immediately in the storefront. Use the stepper for small adjustments.
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <SheetFooter className="pt-6 border-t sm:flex-col gap-3">
                                                 <Button
-                                                    className="w-full bg-emerald-600 hover:bg-emerald-700"
+                                                    className="w-full h-12 gap-2 text-base font-bold bg-emerald-600 hover:bg-emerald-700 shadow-[0_10px_20px_-10px_rgba(5,150,105,0.4)]"
                                                     disabled={updatingId === item.id}
                                                     onClick={(e) => {
-                                                        const input = (e.currentTarget.parentElement as HTMLElement).querySelector('input');
+                                                        const container = e.currentTarget.closest('[role="dialog"]');
+                                                        const input = container?.querySelector('input');
                                                         const stock = parseInt(input?.value || "0");
                                                         handleUpdateStock(item.id, stock);
                                                     }}
                                                 >
-                                                    {updatingId === item.id ? "Updating..." : "Update Stock"}
+                                                    {updatingId === item.id ? (
+                                                        <>
+                                                            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                                                            Updating...
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <CheckCircle2 className="h-5 w-5" />
+                                                            Confirm Stock Update
+                                                        </>
+                                                    )}
                                                 </Button>
-                                            </div>
+                                                <SheetClose asChild>
+                                                    <Button variant="ghost" className="w-full h-12 text-muted-foreground hover:text-foreground">
+                                                        Cancel
+                                                    </Button>
+                                                </SheetClose>
+                                            </SheetFooter>
                                         </SheetContent>
                                     </Sheet>
                                 </div>
