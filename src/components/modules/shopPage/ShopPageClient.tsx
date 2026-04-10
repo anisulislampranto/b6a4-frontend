@@ -2,10 +2,14 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import FormInput from "@/components/ui/FormInput";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { useEffect, useMemo, useState } from "react";
 import { medicineService } from "@/services/medicine.service";
+import { inventoryService } from "@/services/inventory.service";
 import type { MedicineWithRelations } from "@/types/medicine.type";
+import type { Category } from "@/types/category.type";
+import type { Brand } from "@/types/brand.type";
 
 export default function ShopPageClient() {
     const [filters, setFilters] = useState({
@@ -16,8 +20,27 @@ export default function ShopPageClient() {
         maxPrice: "",
     });
     const [medicines, setMedicines] = useState<MedicineWithRelations[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [brands, setBrands] = useState<Brand[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    // Load categories and brands once on mount
+    useEffect(() => {
+        const loadOptions = async () => {
+            try {
+                const [catRes, brandRes] = await Promise.all([
+                    inventoryService.getCategories(),
+                    inventoryService.getBrands(),
+                ]);
+                setCategories(catRes?.data || []);
+                setBrands(brandRes?.data || []);
+            } catch {
+                // silently fail — filters will just be empty
+            }
+        };
+        loadOptions();
+    }, []);
 
     const activeFilters = useMemo(
         () =>
@@ -61,25 +84,6 @@ export default function ShopPageClient() {
         setFilters((prev) => ({ ...prev, [key]: value }));
     };
 
-    const makeField = (key: keyof typeof filters) => ({
-        state: { value: filters[key], meta: { errors: [] as string[] } },
-        handleChange: updateFilter(key),
-        handleBlur: () => undefined,
-    });
-
-    const filterFields: Array<{
-        key: keyof typeof filters;
-        label: string;
-        placeholder: string;
-        type?: string;
-    }> = [
-            { key: "search", label: "Search", placeholder: "Search medicines..." },
-            { key: "category", label: "Category", placeholder: "Category" },
-            { key: "brand", label: "Brand", placeholder: "Brand" },
-            { key: "minPrice", label: "Min Price", placeholder: "Min Price", type: "number" },
-            { key: "maxPrice", label: "Max Price", placeholder: "Max Price", type: "number" },
-        ];
-
     const resetFilters = () => {
         setFilters({
             search: "",
@@ -97,18 +101,76 @@ export default function ShopPageClient() {
                     <div className="mb-6 flex flex-col gap-2">
                         <h1 className="text-3xl font-bold text-emerald-700 sm:text-4xl">Shop Medicines</h1>
                     </div>
-                    <div className="grid grid-cols-1 items-end gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6">
-                        {filterFields.map((field) => (
-                            <FormInput
-                                key={field.key}
-                                label={field.label}
-                                name={field.key}
-                                placeholder={field.placeholder}
-                                type={field.type}
-                                field={makeField(field.key)}
+                    <div className="grid grid-cols-1 items-end gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+                        {/* Search */}
+                        <div className="space-y-1.5">
+                            <Label className="text-sm font-semibold text-foreground/90">Search</Label>
+                            <Input
+                                placeholder="Search medicines..."
+                                value={filters.search}
+                                onChange={(e) => updateFilter("search")(e.target.value)}
                             />
-                        ))}
-                        <Button className="w-full bg-emerald-600 hover:bg-emerald-700" onClick={resetFilters}>
+                        </div>
+
+                        {/* Category dropdown */}
+                        <div className="space-y-1.5">
+                            <Label className="text-sm font-semibold text-foreground/90">Category</Label>
+                            <select
+                                value={filters.category}
+                                onChange={(e) => updateFilter("category")(e.target.value)}
+                                className="h-10 w-full rounded-xl border border-border bg-card px-3.5 text-sm outline-none transition focus-visible:ring-4 focus-visible:ring-ring/30"
+                            >
+                                <option value="">All Categories</option>
+                                {categories.map((cat) => (
+                                    <option key={cat.id} value={cat.id}>
+                                        {cat.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Brand dropdown */}
+                        <div className="space-y-1.5">
+                            <Label className="text-sm font-semibold text-foreground/90">Brand</Label>
+                            <select
+                                value={filters.brand}
+                                onChange={(e) => updateFilter("brand")(e.target.value)}
+                                className="h-10 w-full rounded-xl border border-border bg-card px-3.5 text-sm outline-none transition focus-visible:ring-4 focus-visible:ring-ring/30"
+                            >
+                                <option value="">All Brands</option>
+                                {brands.map((b) => (
+                                    <option key={b.id} value={b.id}>
+                                        {b.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Min Price */}
+                        <div className="space-y-1.5">
+                            <Label className="text-sm font-semibold text-foreground/90">Min Price</Label>
+                            <Input
+                                type="number"
+                                min="0"
+                                placeholder="Min Price"
+                                value={filters.minPrice}
+                                onChange={(e) => updateFilter("minPrice")(e.target.value)}
+                            />
+                        </div>
+
+                        {/* Max Price */}
+                        <div className="space-y-1.5">
+                            <Label className="text-sm font-semibold text-foreground/90">Max Price</Label>
+                            <Input
+                                type="number"
+                                min="0"
+                                placeholder="Max Price"
+                                value={filters.maxPrice}
+                                onChange={(e) => updateFilter("maxPrice")(e.target.value)}
+                            />
+                        </div>
+
+                        <Button className="h-10 w-full bg-emerald-600 hover:bg-emerald-700" onClick={resetFilters}>
                             Reset Filters
                         </Button>
                     </div>
