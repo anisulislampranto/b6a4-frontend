@@ -1,5 +1,5 @@
-import AddMedicineClient from "@/components/modules/seller/AddMedicineClient";
+import SellerInventoryClient from "@/components/modules/seller/SellerInventoryClient";
 
 export default function SellerMedicinesPage() {
-    return <AddMedicineClient />;
+    return <SellerInventoryClient />;
 }

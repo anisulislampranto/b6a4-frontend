@@ -28,7 +28,7 @@ const roleContent: Record<
         title: "Seller Dashboard",
         subtitle: "Manage medicine inventory, incoming orders, and stock updates.",
         panels: [
-            { title: "Inventory", description: "Add, edit, and remove your medicine listings.", href: "/seller/inventory" },
+            { title: "Inventory", description: "Add, edit, and remove your medicine listings.", href: "/seller/medicines" },
             { title: "Seller Orders", description: "View new orders and update order statuses.", href: "/seller/orders" },
             { title: "Seller Overview", description: "See daily activity and stock visibility.", href: "/seller/dashboard" },
         ],
@@ -100,7 +100,7 @@ export default function DashboardClient() {
                 {(role === "SELLER" || role === "ADMIN") && (
                     <div className="mt-5">
                         <Button asChild className="bg-emerald-600 hover:bg-emerald-700">
-                            <Link href="/seller/medicines">Add Medicine</Link>
+                            <Link href="/seller/medicines/add">Add Medicine</Link>
                         </Button>
                     </div>
                 )}

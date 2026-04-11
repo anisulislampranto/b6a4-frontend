@@ -201,7 +201,7 @@ export default function AddMedicineClient() {
                 brandId: prev.brandId,
             }));
             setTimeout(() => {
-                router.push("/seller/inventory");
+                router.push("/seller/medicines");
             }, 500);
         } catch {
             setError("Something went wrong while adding medicine.");

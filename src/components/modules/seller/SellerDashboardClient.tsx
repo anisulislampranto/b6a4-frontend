@@ -45,7 +45,7 @@ export default function SellerDashboardClient() {
                         <h2 className="text-xl font-semibold text-foreground">Add New Medicine</h2>
                         <p className="text-sm text-muted-foreground">Create a new medicine listing with category and brand details.</p>
                         <Button asChild className="bg-emerald-600 hover:bg-emerald-700">
-                            <Link href="/seller/medicines">Go to Add Medicine</Link>
+                            <Link href="/seller/medicines/add">Go to Add Medicine</Link>
                         </Button>
                     </CardContent>
                 </Card>
@@ -55,7 +55,7 @@ export default function SellerDashboardClient() {
                         <h2 className="text-xl font-semibold text-foreground">View Inventory</h2>
                         <p className="text-sm text-muted-foreground">See all your medicines, stock levels, and status at a glance.</p>
                         <Button asChild variant="outline" className="border-emerald-200 text-emerald-700 hover:bg-emerald-50">
-                            <Link href="/seller/inventory">Open Inventory</Link>
+                            <Link href="/seller/medicines">Open Inventory</Link>
                         </Button>
                     </CardContent>
                 </Card>

@@ -125,7 +125,7 @@ export default function SellerInventoryClient() {
                     <p className="mt-2 text-sm text-muted-foreground">Manage all your medicine listings in one place.</p>
                 </div>
                 <Button asChild className="bg-emerald-600 hover:bg-emerald-700">
-                    <Link href="/seller/medicines">Add Medicine</Link>
+                    <Link href="/seller/medicines/add">Add Medicine</Link>
                 </Button>
             </section>
 
@@ -146,7 +146,7 @@ export default function SellerInventoryClient() {
                     <CardContent className="space-y-4 p-6 text-center">
                         <p className="text-muted-foreground">No medicines found in your inventory yet.</p>
                         <Button asChild variant="outline" className="border-emerald-200 text-emerald-700 hover:bg-emerald-50">
-                            <Link href="/seller/medicines">Add Your First Medicine</Link>
+                            <Link href="/seller/medicines/add">Add Your First Medicine</Link>
                         </Button>
                     </CardContent>
                 </Card>
