@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Menu } from "lucide-react";
 import { LogOut } from "lucide-react";
 
@@ -75,10 +76,6 @@ const Navbar = ({
       title: "Dashboard",
       url: "/dashboard",
     },
-    {
-      title: "Blog",
-      url: "/",
-    },
   ],
   auth = {
     login: { title: "Sign In", url: "/signin" },
@@ -105,13 +102,13 @@ const Navbar = ({
         <nav className="hidden h-20 items-center justify-between lg:flex">
           <div className="flex items-center gap-8">
             {/* Logo */}
-            <a href={logo.url} className="flex items-center gap-2 rounded-xl px-2 py-1.5 transition hover:bg-accent/70">
+            <Link href={logo.url} className="flex items-center gap-2 rounded-xl px-2 py-1.5 transition hover:bg-accent/70">
               <img
                 src={logo.src}
                 className="h-12 w-auto dark:invert"
                 alt={logo.alt}
               />
-            </a>
+            </Link>
             <div className="flex items-center">
               <NavigationMenu>
                 <NavigationMenuList>
@@ -149,10 +146,10 @@ const Navbar = ({
           ) : (
             <div className="flex items-center gap-2.5">
               <Button asChild variant="outline" size="sm">
-                <a href={auth.login.url}>{auth.login.title}</a>
+                <Link href={auth.login.url}>{auth.login.title}</Link>
               </Button>
               <Button asChild size="sm">
-                <a href={auth.signup.url}>{auth.signup.title}</a>
+                <Link href={auth.signup.url}>{auth.signup.title}</Link>
               </Button>
             </div>
           )}
@@ -162,13 +159,13 @@ const Navbar = ({
         <div className="block lg:hidden">
           <div className="flex items-center justify-between py-3">
             {/* Logo */}
-            <a href={logo.url} className="flex items-center gap-2 rounded-xl px-2 py-1">
+            <Link href={logo.url} className="flex items-center gap-2 rounded-xl px-2 py-1">
               <img
                 src={logo.src}
                 className="h-10 w-auto dark:invert"
                 alt={logo.alt}
               />
-            </a>
+            </Link>
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon" className="rounded-xl">
@@ -178,13 +175,13 @@ const Navbar = ({
               <SheetContent className="overflow-y-auto border-l border-border/70 px-5">
                 <SheetHeader>
                   <SheetTitle>
-                    <a href={logo.url} className="flex items-center gap-2 rounded-xl px-1 py-1">
+                    <Link href={logo.url} className="flex items-center gap-2 rounded-xl px-1 py-1">
                       <img
                         src={logo.src}
                         className="h-10 w-auto dark:invert"
                         alt={logo.alt}
                       />
-                    </a>
+                    </Link>
                   </SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-8 pt-6">
@@ -225,10 +222,10 @@ const Navbar = ({
                   ) : (
                     <div className="flex flex-col gap-3 border-t border-border/70 pt-6">
                       <Button asChild variant="outline">
-                        <a href={auth.login.url}>{auth.login.title}</a>
+                        <Link href={auth.login.url}>{auth.login.title}</Link>
                       </Button>
                       <Button asChild>
-                        <a href={auth.signup.url}>{auth.signup.title}</a>
+                        <Link href={auth.signup.url}>{auth.signup.title}</Link>
                       </Button>
                     </div>
                   )}
@@ -253,11 +250,13 @@ const renderMenuItem = (item: MenuItem) => {
 
   return (
     <NavigationMenuItem key={item.title}>
-      <NavigationMenuLink
-        href={item.url}
-        className="group inline-flex h-10 w-max items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold text-foreground/85 transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-4 focus-visible:ring-ring/30"
-      >
-        {item.title}
+      <NavigationMenuLink asChild>
+        <Link
+          href={item.url}
+          className="group inline-flex h-10 w-max items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold text-foreground/85 transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-4 focus-visible:ring-ring/30"
+        >
+          {item.title}
+        </Link>
       </NavigationMenuLink>
     </NavigationMenuItem>
   );
@@ -280,19 +279,19 @@ const renderMobileMenuItem = (item: MenuItem) => {
   }
 
   return (
-    <a
+    <Link
       key={item.title}
       href={item.url}
       className="rounded-xl border border-border/70 px-4 py-3 text-md font-semibold text-foreground/90 transition hover:bg-accent"
     >
       {item.title}
-    </a>
+    </Link>
   );
 };
 
 const SubMenuLink = ({ item }: { item: MenuItem }) => {
   return (
-    <a
+    <Link
       className="flex min-w-80 flex-row gap-4 rounded-xl p-3 leading-none no-underline transition-colors outline-none select-none hover:bg-muted hover:text-accent-foreground"
       href={item.url}
     >
@@ -305,7 +304,7 @@ const SubMenuLink = ({ item }: { item: MenuItem }) => {
           </p>
         )}
       </div>
-    </a>
+    </Link>
   );
 };
 
