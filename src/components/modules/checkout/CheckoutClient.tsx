@@ -3,7 +3,6 @@
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { selectCartItems, selectCartTotal, clearCart } from "@/redux/features/cart/cartSlice";
 import { useForm } from "@tanstack/react-form";
-import { zodValidator } from "@tanstack/zod-form-adapter";
 import { checkoutSchema } from "./validation/checkout.schema";
 import { orderService } from "@/services/order.service";
 import { toast } from "sonner";
@@ -25,7 +24,6 @@ export default function CheckoutClient() {
         defaultValues: {
             address: "",
         },
-        validatorAdapter: zodValidator(),
         validators: {
             onChange: checkoutSchema,
         },
@@ -110,7 +108,7 @@ export default function CheckoutClient() {
                                             />
                                             {field.state.meta.errors ? (
                                                 <p className="text-xs font-medium text-red-500">
-                                                    {field.state.meta.errors.join(", ")}
+                                                    {field.state.meta.errors?.[0]?.message}
                                                 </p>
                                             ) : null}
                                         </div>
