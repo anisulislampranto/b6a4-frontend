@@ -10,8 +10,12 @@ import { inventoryService } from "@/services/inventory.service";
 import type { MedicineWithRelations } from "@/types/medicine.type";
 import type { Category } from "@/types/category.type";
 import type { Brand } from "@/types/brand.type";
+import { useAppDispatch } from "@/redux/hooks";
+import { addItem } from "@/redux/features/cart/cartSlice";
+import { toast } from "sonner";
 
 export default function ShopPageClient() {
+    const dispatch = useAppDispatch();
     const [filters, setFilters] = useState({
         search: "",
         category: "",
@@ -202,7 +206,15 @@ export default function ShopPageClient() {
                                     Brand: <span className="text-foreground">{p.brand.name}</span>
                                 </span>
                                 <p className="text-xl font-bold text-emerald-700">${p.price}</p>
-                                <Button className="bg-emerald-600 hover:bg-emerald-700">Add to Cart</Button>
+                                <Button 
+                                    className="bg-emerald-600 hover:bg-emerald-700"
+                                    onClick={() => {
+                                        dispatch(addItem(p));
+                                        toast.success(`${p.name} added to cart!`);
+                                    }}
+                                >
+                                    Add to Cart
+                                </Button>
                             </CardContent>
                         </Card>
                     ))}

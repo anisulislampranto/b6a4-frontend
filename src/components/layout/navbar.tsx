@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Menu } from "lucide-react";
-import { LogOut } from "lucide-react";
+import { Menu, LogOut, ShoppingBag, ClipboardList } from "lucide-react";
+import { useAppSelector } from "@/redux/hooks";
+import { selectCartCount } from "@/redux/features/cart/cartSlice";
 
 import { cn } from "@/lib/utils";
 import { authClient } from "@/lib/auth-client";
@@ -84,6 +85,7 @@ const Navbar = ({
   className,
 }: Navbar1Props) => {
   const { data: session, isPending } = authClient.useSession();
+  const cartCount = useAppSelector(selectCartCount);
   const user = session?.user;
   const role = user?.role?.toUpperCase() || "CUSTOMER";
   const userName = user?.name || "User";
@@ -113,46 +115,70 @@ const Navbar = ({
               <NavigationMenu>
                 <NavigationMenuList>
                   {menu.map((item) => renderMenuItem(item))}
+                  {isLoggedIn && role === "CUSTOMER" && (
+                    <NavigationMenuItem>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          href="/orders"
+                          className="group inline-flex h-10 w-max items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold text-foreground/85 transition-colors hover:bg-accent hover:text-accent-foreground"
+                        >
+                          <ClipboardList className="mr-2 size-4" />
+                          My Orders
+                        </Link>
+                      </NavigationMenuLink>
+                    </NavigationMenuItem>
+                  )}
                 </NavigationMenuList>
               </NavigationMenu>
             </div>
           </div>
-          {isPending ? (
-            <div className="h-10 w-56 animate-pulse rounded-xl border border-border/70 bg-muted/50" />
-          ) : isLoggedIn ? (
-            <div className="flex items-center gap-2.5">
-              <div className="flex items-center gap-3 rounded-2xl border border-emerald-100 bg-white/90 px-3 py-2 shadow-sm">
-                <div className="flex size-9 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">
-                  {userInitial}
-                </div>
-                <div className="max-w-44 leading-tight">
-                  <p className="truncate text-sm font-semibold text-foreground">{userName}</p>
-                  <p className="truncate text-xs text-muted-foreground">{userEmail}</p>
-                </div>
-                <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-emerald-700">
-                  {role}
+          <div className="flex items-center gap-4">
+            <Link href="/cart" className="relative group p-2 rounded-xl hover:bg-accent transition-colors">
+              <ShoppingBag className="size-6 text-foreground/80 group-hover:text-emerald-600 transition-colors" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white shadow-sm animate-in zoom-in duration-300">
+                  {cartCount}
                 </span>
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="ml-1 inline-flex size-8 items-center justify-center rounded-full border border-emerald-200 text-emerald-700 transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-200"
-                  aria-label="Logout"
-                  title="Logout"
-                >
-                  <LogOut className="size-4" />
-                </button>
+              )}
+            </Link>
+
+            {isPending ? (
+              <div className="h-10 w-48 animate-pulse rounded-xl border border-border/70 bg-muted/50" />
+            ) : isLoggedIn ? (
+              <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-3 rounded-2xl border border-emerald-100 bg-white/90 px-3 py-2 shadow-sm">
+                  <div className="flex size-9 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">
+                    {userInitial}
+                  </div>
+                  <div className="max-w-44 leading-tight">
+                    <p className="truncate text-sm font-semibold text-foreground">{userName}</p>
+                    <p className="truncate text-xs text-muted-foreground">{userEmail}</p>
+                  </div>
+                  <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-emerald-700">
+                    {role}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="ml-1 inline-flex size-8 items-center justify-center rounded-full border border-emerald-200 text-emerald-700 transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-200"
+                    aria-label="Logout"
+                    title="Logout"
+                  >
+                    <LogOut className="size-4" />
+                  </button>
+                </div>
               </div>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2.5">
-              <Button asChild variant="outline" size="sm">
-                <Link href={auth.login.url}>{auth.login.title}</Link>
-              </Button>
-              <Button asChild size="sm">
-                <Link href={auth.signup.url}>{auth.signup.title}</Link>
-              </Button>
-            </div>
-          )}
+            ) : (
+              <div className="flex items-center gap-2.5">
+                <Button asChild variant="outline" size="sm">
+                  <Link href={auth.login.url}>{auth.login.title}</Link>
+                </Button>
+                <Button asChild size="sm">
+                  <Link href={auth.signup.url}>{auth.signup.title}</Link>
+                </Button>
+              </div>
+            )}
+          </div>
         </nav>
 
         {/* Mobile Menu */}
@@ -196,7 +222,30 @@ const Navbar = ({
                   {isPending ? (
                     <div className="h-12 w-full animate-pulse rounded-xl border border-border/70 bg-muted/50" />
                   ) : isLoggedIn ? (
-                    <div className="space-y-3 border-t border-border/70 pt-6">
+                    <div className="space-y-4 border-t border-border/70 pt-6">
+                      <Link
+                        href="/cart"
+                        className="flex items-center justify-between rounded-xl border border-border/70 px-4 py-3 text-md font-semibold text-foreground/90 transition hover:bg-accent"
+                      >
+                        <div className="flex items-center gap-2">
+                          <ShoppingBag className="size-5" />
+                          Cart
+                        </div>
+                        {cartCount > 0 && (
+                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-600 text-xs font-bold text-white">
+                            {cartCount}
+                          </span>
+                        )}
+                      </Link>
+                      {role === "CUSTOMER" && (
+                        <Link
+                          href="/orders"
+                          className="flex items-center gap-2 rounded-xl border border-border/70 px-4 py-3 text-md font-semibold text-foreground/90 transition hover:bg-accent"
+                        >
+                          <ClipboardList className="size-5" />
+                          My Orders
+                        </Link>
+                      )}
                       <div className="flex items-center gap-3 rounded-2xl border border-emerald-100 bg-white/90 px-3 py-3 shadow-sm">
                         <div className="flex size-10 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">
                           {userInitial}

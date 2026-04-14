@@ -17,3 +17,8 @@ export interface ApiMutationResponse<T = unknown> {
     data?: T;
     message?: string;
 }
+
+export interface ApiResponse<T> {
+    data: T;
+    message?: string;
+}
