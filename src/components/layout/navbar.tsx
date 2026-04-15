@@ -192,95 +192,112 @@ const Navbar = ({
                 alt={logo.alt}
               />
             </Link>
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="icon" className="rounded-xl">
-                  <Menu className="size-4" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent className="overflow-y-auto border-l border-border/70 px-5">
-                <SheetHeader>
-                  <SheetTitle>
-                    <Link href={logo.url} className="flex items-center gap-2 rounded-xl px-1 py-1">
-                      <img
-                        src={logo.src}
-                        className="h-10 w-auto dark:invert"
-                        alt={logo.alt}
-                      />
-                    </Link>
-                  </SheetTitle>
-                </SheetHeader>
-                <div className="flex flex-col gap-8 pt-6">
-                  <Accordion
-                    type="single"
-                    collapsible
-                    className="flex w-full flex-col gap-5"
-                  >
-                    {menu.map((item) => renderMobileMenuItem(item))}
-                  </Accordion>
 
-                  {isPending ? (
-                    <div className="h-12 w-full animate-pulse rounded-xl border border-border/70 bg-muted/50" />
-                  ) : isLoggedIn ? (
-                    <div className="space-y-4 border-t border-border/70 pt-6">
-                      <Link
-                        href="/cart"
-                        className="flex items-center justify-between rounded-xl border border-border/70 px-4 py-3 text-md font-semibold text-foreground/90 transition hover:bg-accent"
-                      >
-                        <div className="flex items-center gap-2">
-                          <ShoppingBag className="size-5" />
-                          Cart
-                        </div>
-                        {cartCount > 0 && (
-                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-600 text-xs font-bold text-white">
-                            {cartCount}
-                          </span>
-                        )}
+            {/* Right side (Cart + Menu) */}
+            <div className="flex items-center gap-2">
+              {/* Cart Icon */}
+              <Link
+                href="/cart"
+                className="relative group p-2 rounded-xl hover:bg-accent transition-colors"
+              >
+                <ShoppingBag className="size-5 text-foreground/80 group-hover:text-emerald-600 transition-colors" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
+
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="icon" className="rounded-xl">
+                    <Menu className="size-4" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent className="overflow-y-auto border-l border-border/70 px-5">
+                  <SheetHeader>
+                    <SheetTitle>
+                      <Link href={logo.url} className="flex items-center gap-2 rounded-xl px-1 py-1">
+                        <img
+                          src={logo.src}
+                          className="h-10 w-auto dark:invert"
+                          alt={logo.alt}
+                        />
                       </Link>
-                      {role === "CUSTOMER" && (
+                    </SheetTitle>
+                  </SheetHeader>
+                  <div className="flex flex-col gap-8 pt-6">
+                    <Accordion
+                      type="single"
+                      collapsible
+                      className="flex w-full flex-col gap-5"
+                    >
+                      {menu.map((item) => renderMobileMenuItem(item))}
+                    </Accordion>
+
+                    {isPending ? (
+                      <div className="h-12 w-full animate-pulse rounded-xl border border-border/70 bg-muted/50" />
+                    ) : isLoggedIn ? (
+                      <div className="space-y-4 border-t border-border/70 pt-6">
                         <Link
-                          href="/orders"
-                          className="flex items-center gap-2 rounded-xl border border-border/70 px-4 py-3 text-md font-semibold text-foreground/90 transition hover:bg-accent"
+                          href="/cart"
+                          className="flex items-center justify-between rounded-xl border border-border/70 px-4 py-3 text-md font-semibold text-foreground/90 transition hover:bg-accent"
                         >
-                          <ClipboardList className="size-5" />
-                          My Orders
+                          <div className="flex items-center gap-2">
+                            <ShoppingBag className="size-5" />
+                            Cart
+                          </div>
+                          {cartCount > 0 && (
+                            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-600 text-xs font-bold text-white">
+                              {cartCount}
+                            </span>
+                          )}
                         </Link>
-                      )}
-                      <div className="flex items-center gap-3 rounded-2xl border border-emerald-100 bg-white/90 px-3 py-3 shadow-sm">
-                        <div className="flex size-10 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">
-                          {userInitial}
+                        {role === "CUSTOMER" && (
+                          <Link
+                            href="/orders"
+                            className="flex items-center gap-2 rounded-xl border border-border/70 px-4 py-3 text-md font-semibold text-foreground/90 transition hover:bg-accent"
+                          >
+                            <ClipboardList className="size-5" />
+                            My Orders
+                          </Link>
+                        )}
+                        <div className="flex items-center gap-3 rounded-2xl border border-emerald-100 bg-white/90 px-3 py-3 shadow-sm">
+                          <div className="flex size-10 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">
+                            {userInitial}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm font-semibold text-foreground">{userName}</p>
+                            <p className="truncate text-xs text-muted-foreground">{userEmail}</p>
+                          </div>
+                          <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-emerald-700">
+                            {role}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={handleLogout}
+                            className="inline-flex size-8 items-center justify-center rounded-full border border-emerald-200 text-emerald-700 transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-200"
+                            aria-label="Logout"
+                            title="Logout"
+                          >
+                            <LogOut className="size-4" />
+                          </button>
                         </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-semibold text-foreground">{userName}</p>
-                          <p className="truncate text-xs text-muted-foreground">{userEmail}</p>
-                        </div>
-                        <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-emerald-700">
-                          {role}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={handleLogout}
-                          className="inline-flex size-8 items-center justify-center rounded-full border border-emerald-200 text-emerald-700 transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-200"
-                          aria-label="Logout"
-                          title="Logout"
-                        >
-                          <LogOut className="size-4" />
-                        </button>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col gap-3 border-t border-border/70 pt-6">
-                      <Button asChild variant="outline">
-                        <Link href={auth.login.url}>{auth.login.title}</Link>
-                      </Button>
-                      <Button asChild>
-                        <Link href={auth.signup.url}>{auth.signup.title}</Link>
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </SheetContent>
-            </Sheet>
+                    ) : (
+                      <div className="flex flex-col gap-3 border-t border-border/70 pt-6">
+                        <Button asChild variant="outline">
+                          <Link href={auth.login.url}>{auth.login.title}</Link>
+                        </Button>
+                        <Button asChild>
+                          <Link href={auth.signup.url}>{auth.signup.title}</Link>
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
         </div>
       </div>
