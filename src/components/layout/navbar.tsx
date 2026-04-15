@@ -239,20 +239,6 @@ const Navbar = ({
                       <div className="h-12 w-full animate-pulse rounded-xl border border-border/70 bg-muted/50" />
                     ) : isLoggedIn ? (
                       <div className="space-y-4 border-t border-border/70 pt-6">
-                        <Link
-                          href="/cart"
-                          className="flex items-center justify-between rounded-xl border border-border/70 px-4 py-3 text-md font-semibold text-foreground/90 transition hover:bg-accent"
-                        >
-                          <div className="flex items-center gap-2">
-                            <ShoppingBag className="size-5" />
-                            Cart
-                          </div>
-                          {cartCount > 0 && (
-                            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-600 text-xs font-bold text-white">
-                              {cartCount}
-                            </span>
-                          )}
-                        </Link>
                         {role === "CUSTOMER" && (
                           <Link
                             href="/orders"
