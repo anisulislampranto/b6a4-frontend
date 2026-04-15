@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, LogOut, ShoppingBag, ClipboardList } from "lucide-react";
+import { Menu, LogOut, ShoppingBag, ClipboardList, UserCog } from "lucide-react";
 import { useAppSelector } from "@/redux/hooks";
 import { selectCartCount } from "@/redux/features/cart/cartSlice";
 
@@ -157,6 +157,13 @@ const Navbar = ({
                   <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-emerald-700">
                     {role}
                   </span>
+                  <Link
+                    href="/profile"
+                    className="inline-flex size-8 items-center justify-center rounded-full border border-emerald-200 text-emerald-700 transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-200"
+                    title="Profile Settings"
+                  >
+                    <UserCog className="size-4" />
+                  </Link>
                   <button
                     type="button"
                     onClick={handleLogout}
@@ -259,6 +266,13 @@ const Navbar = ({
                           <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-emerald-700">
                             {role}
                           </span>
+                          <Link
+                            href="/profile"
+                            className="inline-flex size-8 items-center justify-center rounded-full border border-emerald-200 text-emerald-700 transition hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-200"
+                            title="Profile Settings"
+                          >
+                            <UserCog className="size-4" />
+                          </Link>
                           <button
                             type="button"
                             onClick={handleLogout}
