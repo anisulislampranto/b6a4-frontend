@@ -20,7 +20,26 @@ const getMyOrders = async () => {
     });
 };
 
+const getSellerOrders = async () => {
+    return requestJSONWithStatus<ApiResponse<Order[]>>(`${API_BASE_URL}/orders/seller`, {
+        credentials: "include",
+    });
+};
+
+const updateSellerOrderStatus = async (orderId: string, status: Order["status"]) => {
+    return requestJSONWithStatus<ApiResponse<Order>>(`${API_BASE_URL}/orders/seller/${orderId}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ status }),
+    });
+};
+
 export const orderService = {
     createOrder,
     getMyOrders,
+    getSellerOrders,
+    updateSellerOrderStatus,
 };

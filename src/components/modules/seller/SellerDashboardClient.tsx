@@ -39,7 +39,7 @@ export default function SellerDashboardClient() {
                 </p>
             </section>
 
-            <section className="grid gap-5 md:grid-cols-2">
+            <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
                 <Card className="rounded-2xl border-border/70 bg-card/95">
                     <CardContent className="space-y-4 p-6">
                         <h2 className="text-xl font-semibold text-foreground">Add New Medicine</h2>
@@ -56,6 +56,16 @@ export default function SellerDashboardClient() {
                         <p className="text-sm text-muted-foreground">See all your medicines, stock levels, and status at a glance.</p>
                         <Button asChild variant="outline" className="border-emerald-200 text-emerald-700 hover:bg-emerald-50">
                             <Link href="/seller/medicines">Open Inventory</Link>
+                        </Button>
+                    </CardContent>
+                </Card>
+
+                <Card className="rounded-2xl border-border/70 bg-card/95">
+                    <CardContent className="space-y-4 p-6">
+                        <h2 className="text-xl font-semibold text-foreground">Manage Orders</h2>
+                        <p className="text-sm text-muted-foreground">Update order statuses and track incoming customer orders.</p>
+                        <Button asChild variant="outline" className="border-emerald-200 text-emerald-700 hover:bg-emerald-50">
+                            <Link href="/seller/orders">Open Seller Orders</Link>
                         </Button>
                     </CardContent>
                 </Card>
