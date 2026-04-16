@@ -1,7 +1,7 @@
 import type { MedicineWithRelations } from "@/types/medicine.type";
-import type { ApiPaginatedResponse } from "@/types/api.type";
+import type { ApiPaginatedResponse, ApiResponse } from "@/types/api.type";
 import { API_BASE_URL } from "./api-base";
-import { requestJSON } from "./http.service";
+import { requestJSON, requestJSONWithStatus } from "./http.service";
 
 export interface MedicineFilters {
     search?: string;
@@ -21,6 +21,14 @@ const getMedicines = async (filters: MedicineFilters) => {
     );
 };
 
+const getMedicineById = async (id: string) => {
+    return requestJSONWithStatus<ApiResponse<MedicineWithRelations>>(
+        `${API_BASE_URL}/medicines/${id}`,
+        { cache: "no-store" }
+    );
+};
+
 export const medicineService = {
     getMedicines,
+    getMedicineById,
 };

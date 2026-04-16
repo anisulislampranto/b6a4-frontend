@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { medicineService } from "@/services/medicine.service";
 import { inventoryService } from "@/services/inventory.service";
@@ -191,14 +192,19 @@ export default function ShopPageClient() {
                     {medicines?.map((p) => (
                         <Card key={p.id} className="group overflow-hidden rounded-2xl border-border/70 bg-card/95 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_30px_-24px_rgba(15,23,42,0.9)]">
                             <CardContent className="flex flex-col gap-4 p-5">
-                                <div className="flex h-36 items-center justify-center rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-100 to-emerald-50 text-sm font-bold tracking-wide text-emerald-600">
+                                <Link
+                                    href={`/shop/${p.id}`}
+                                    className="flex h-36 items-center justify-center rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-100 to-emerald-50 text-sm font-bold tracking-wide text-emerald-600 outline-none transition hover:opacity-95 focus-visible:ring-4 focus-visible:ring-ring/30"
+                                >
                                     {p.image ? (
                                         <img src={p.image} alt={p.name} className="h-full w-full rounded-2xl object-cover" />
                                     ) : (
                                         "IMG"
                                     )}
-                                </div>
-                                <h3 className="text-base font-semibold text-foreground">{p.name}</h3>
+                                </Link>
+                                <Link href={`/shop/${p.id}`} className="text-base font-semibold text-foreground outline-none transition hover:text-emerald-700 focus-visible:ring-4 focus-visible:ring-ring/30">
+                                    {p.name}
+                                </Link>
                                 <span className="w-fit rounded-full border border-emerald-200 bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700">
                                     {p.category.name}
                                 </span>
@@ -214,6 +220,9 @@ export default function ShopPageClient() {
                                     }}
                                 >
                                     Add to Cart
+                                </Button>
+                                <Button asChild variant="outline" className="border-emerald-200 text-emerald-700 hover:bg-emerald-50">
+                                    <Link href={`/shop/${p.id}`}>View Details</Link>
                                 </Button>
                             </CardContent>
                         </Card>
