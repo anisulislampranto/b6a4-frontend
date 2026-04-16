@@ -22,7 +22,7 @@ import {
     Minus,
     Package2,
     CheckCircle2,
-    X
+    Trash2
 } from "lucide-react";
 import { SheetFooter, SheetClose } from "@/components/ui/sheet";
 import type { MedicineWithRelations } from "@/types/medicine.type";
@@ -82,6 +82,27 @@ export default function SellerInventoryClient() {
             }
         } catch {
             toast.error("An error occurred while updating stock");
+        } finally {
+            setUpdatingId(null);
+        }
+    };
+
+    const handleDeleteMedicine = async (id: string, name: string) => {
+        const confirmed = window.confirm(`Are you sure you want to remove "${name}"?`);
+        if (!confirmed) return;
+
+        setUpdatingId(id);
+        try {
+            const { ok, data } = await inventoryService.deleteMedicine(id);
+            if (!ok) {
+                toast.error(data?.message || "Failed to remove medicine.");
+                return;
+            }
+
+            toast.success("Medicine removed successfully!");
+            setItems((prev) => prev.filter((item) => item.id !== id));
+        } catch {
+            toast.error("An error occurred while removing medicine.");
         } finally {
             setUpdatingId(null);
         }
@@ -175,14 +196,24 @@ export default function SellerInventoryClient() {
                                         }`}>
                                         {item.isActive ? "Active" : "Inactive"}
                                     </span>
-
-                                    <Sheet>
-                                        <SheetTrigger asChild>
-                                            <Button variant="outline" size="sm" className="h-8 gap-1.5 border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800">
-                                                <Package2 className="h-3.5 w-3.5" />
-                                                Manage Stock
-                                            </Button>
-                                        </SheetTrigger>
+                                    <div className="flex items-center gap-2">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="h-8 gap-1.5 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+                                            onClick={() => handleDeleteMedicine(item.id, item.name)}
+                                            disabled={updatingId === item.id}
+                                        >
+                                            <Trash2 className="h-3.5 w-3.5" />
+                                            Remove
+                                        </Button>
+                                        <Sheet>
+                                            <SheetTrigger asChild>
+                                                <Button variant="outline" size="sm" className="h-8 gap-1.5 border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800">
+                                                    <Package2 className="h-3.5 w-3.5" />
+                                                    Manage Stock
+                                                </Button>
+                                            </SheetTrigger>
                                         <SheetContent className="flex flex-col border-l-emerald-100 sm:max-w-md">
                                             <SheetHeader className="space-y-3 pb-6 border-b">
                                                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600">
@@ -300,8 +331,9 @@ export default function SellerInventoryClient() {
                                                     </Button>
                                                 </SheetClose>
                                             </SheetFooter>
-                                        </SheetContent>
-                                    </Sheet>
+                                            </SheetContent>
+                                        </Sheet>
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>

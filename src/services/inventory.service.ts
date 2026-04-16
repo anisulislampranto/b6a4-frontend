@@ -69,6 +69,13 @@ const updateMedicine = async (id: string, payload: Partial<CreateMedicinePayload
     });
 };
 
+const deleteMedicine = async (id: string) => {
+    return requestJSONWithStatus<ApiMutationResponse>(`${API_BASE_URL}/medicines/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+    });
+};
+
 export const inventoryService = {
     getCategories,
     getBrands,
@@ -77,4 +84,5 @@ export const inventoryService = {
     createMedicine,
     getMyMedicines,
     updateMedicine,
+    deleteMedicine,
 };
