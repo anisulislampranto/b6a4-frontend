@@ -137,6 +137,9 @@ export default function OrdersClient() {
                                                     &quot;{order.address}&quot;
                                                 </p>
                                             </div>
+                                            <Button asChild variant="outline" className="w-full border-emerald-200 text-emerald-700 hover:bg-emerald-50">
+                                                <Link href={`/orders/${order.id}`}>View Details</Link>
+                                            </Button>
                                         </div>
                                     </div>
                                 </div>

@@ -20,6 +20,12 @@ const getMyOrders = async () => {
     });
 };
 
+const getOrderById = async (orderId: string) => {
+    return requestJSONWithStatus<ApiResponse<Order>>(`${API_BASE_URL}/orders/${orderId}`, {
+        credentials: "include",
+    });
+};
+
 const getSellerOrders = async () => {
     return requestJSONWithStatus<ApiResponse<Order[]>>(`${API_BASE_URL}/orders/seller`, {
         credentials: "include",
@@ -40,6 +46,7 @@ const updateSellerOrderStatus = async (orderId: string, status: Order["status"])
 export const orderService = {
     createOrder,
     getMyOrders,
+    getOrderById,
     getSellerOrders,
     updateSellerOrderStatus,
 };
