@@ -40,6 +40,7 @@ const roleContent: Record<
             { title: "Users", description: "Manage customer and seller accounts.", href: "/admin/users" },
             { title: "Orders", description: "Track and review all platform orders.", href: "/admin/orders" },
             { title: "Categories", description: "Create and maintain medicine categories.", href: "/admin/categories" },
+            { title: "Brands", description: "Create and maintain medicine brands.", href: "/admin/brands" },
         ],
     },
 };
