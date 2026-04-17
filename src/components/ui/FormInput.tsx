@@ -8,7 +8,18 @@ interface FormInputProps {
     type?: string;
     placeholder?: string;
     hint?: string;
-    field?: any;
+    field?: FormFieldLike;
+}
+
+interface FormFieldLike {
+    state?: {
+        value?: string | number;
+        meta?: {
+            errors?: Array<string | { message?: string } | null | undefined>;
+        };
+    };
+    handleChange?: (value: string) => void;
+    handleBlur?: () => void;
 }
 
 export default function FormInput({
@@ -18,7 +29,8 @@ export default function FormInput({
     hint,
     field,
 }: FormInputProps) {
-    const errors = field?.state.meta.errors;
+    const fieldState = field?.state;
+    const errors = fieldState?.meta?.errors;
 
     const errorMessage =
         Array.isArray(errors) && errors.length
@@ -34,8 +46,8 @@ export default function FormInput({
             <Input
                 type={type}
                 placeholder={placeholder}
-                value={field?.state.value ?? ""}
-                onChange={(e) => field?.handleChange(e.target.value)}
+                value={fieldState?.value ?? ""}
+                onChange={(e) => field?.handleChange?.(e.target.value)}
                 onBlur={field?.handleBlur}
                 className={cn(
                     "mt-1",
