@@ -7,6 +7,12 @@ import type { Order, OrderStatus } from "@/types/order.type";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Clock, Package, Truck, CheckCircle2, XCircle, CircleDot } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { reviewService } from "@/services/review.service";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
+import type { Review } from "@/types/review.type";
 
 const timelineSteps: { status: OrderStatus; label: string; description: string }[] = [
     { status: "PENDING", label: "Order Placed", description: "Your order has been placed successfully." },
@@ -30,9 +36,16 @@ interface OrderDetailsClientProps {
 }
 
 export default function OrderDetailsClient({ orderId }: OrderDetailsClientProps) {
+    const { data: session } = authClient.useSession();
     const [order, setOrder] = useState<Order | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [activeReviewMedicineId, setActiveReviewMedicineId] = useState<string | null>(null);
+    const [reviewRating, setReviewRating] = useState("5");
+    const [reviewComment, setReviewComment] = useState("");
+    const [submittingReview, setSubmittingReview] = useState(false);
+    const [reviewedMedicineIds, setReviewedMedicineIds] = useState<Record<string, boolean>>({});
+    const [myReviewsByMedicineId, setMyReviewsByMedicineId] = useState<Record<string, Review>>({});
 
     useEffect(() => {
         let cancelled = false;
@@ -66,6 +79,50 @@ export default function OrderDetailsClient({ orderId }: OrderDetailsClientProps)
         return statusOrder.indexOf(order.status);
     }, [order]);
 
+    useEffect(() => {
+        let cancelled = false;
+
+        const loadMyReviewsForOrderItems = async () => {
+            if (!order || !session?.user?.id) return;
+
+            const medicineIds = Array.from(new Set(order.items.map((item) => item.medicineId)));
+            if (medicineIds.length === 0) return;
+
+            try {
+                const results = await Promise.all(
+                    medicineIds.map(async (medicineId) => {
+                        const { ok, data } = await reviewService.getMedicineReviews(medicineId);
+                        if (!ok) return null;
+                        const myReview = (data?.data || []).find((review) => review.userId === session.user.id);
+                        if (!myReview) return null;
+                        return { medicineId, review: myReview };
+                    })
+                );
+
+                if (cancelled) return;
+
+                const reviewedMap: Record<string, boolean> = {};
+                const reviewDataMap: Record<string, Review> = {};
+
+                results.forEach((result) => {
+                    if (!result) return;
+                    reviewedMap[result.medicineId] = true;
+                    reviewDataMap[result.medicineId] = result.review;
+                });
+
+                setReviewedMedicineIds((prev) => ({ ...prev, ...reviewedMap }));
+                setMyReviewsByMedicineId((prev) => ({ ...prev, ...reviewDataMap }));
+            } catch {
+                // silently ignore; backend still validates on submit
+            }
+        };
+
+        loadMyReviewsForOrderItems();
+        return () => {
+            cancelled = true;
+        };
+    }, [order, session?.user?.id]);
+
     if (loading) {
         return (
             <main className="mx-auto min-h-[70vh] max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
@@ -92,6 +149,55 @@ export default function OrderDetailsClient({ orderId }: OrderDetailsClientProps)
     }
 
     const CurrentStatusIcon = statusIconMap[order.status];
+    const canSubmitReview = session?.user?.role?.toUpperCase() === "CUSTOMER" && order.status === "DELIVERED";
+
+    const openReviewForm = async (medicineId: string) => {
+        setActiveReviewMedicineId(medicineId);
+        setReviewRating("5");
+        setReviewComment("");
+
+        if (!session?.user?.id) return;
+        try {
+            const { ok, data } = await reviewService.getMedicineReviews(medicineId);
+            if (!ok) return;
+
+            const alreadyReviewed = (data?.data || []).some((review) => review.userId === session.user.id);
+            if (alreadyReviewed) {
+                setReviewedMedicineIds((prev) => ({ ...prev, [medicineId]: true }));
+                setActiveReviewMedicineId(null);
+                toast.info("You already reviewed this medicine.");
+            }
+        } catch {
+            // no-op, normal submit will still validate at backend
+        }
+    };
+
+    const submitReview = async (medicineId: string) => {
+        setSubmittingReview(true);
+        try {
+            const { ok, data } = await reviewService.createReview({
+                medicineId,
+                rating: Number(reviewRating),
+                comment: reviewComment.trim() || undefined,
+            });
+
+            if (!ok) {
+                toast.error(data?.message || "Failed to submit review.");
+                return;
+            }
+
+            toast.success("Review submitted successfully!");
+            setReviewedMedicineIds((prev) => ({ ...prev, [medicineId]: true }));
+            if (data?.data) {
+                setMyReviewsByMedicineId((prev) => ({ ...prev, [medicineId]: data.data }));
+            }
+            setActiveReviewMedicineId(null);
+        } catch {
+            toast.error("Something went wrong while submitting review.");
+        } finally {
+            setSubmittingReview(false);
+        }
+    };
 
     return (
         <main className="mx-auto min-h-[70vh] max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
@@ -172,25 +278,108 @@ export default function OrderDetailsClient({ orderId }: OrderDetailsClientProps)
             <section className="rounded-3xl border border-border/70 bg-card/95 p-6 sm:p-8">
                 <h2 className="text-xl font-semibold text-foreground">Order Items</h2>
                 <div className="mt-5 space-y-3">
-                    {order.items.map((item) => (
-                        <div key={item.id} className="flex items-center justify-between rounded-xl border border-border/70 bg-card p-4">
-                            <div className="flex items-center gap-3">
-                                <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-emerald-100 bg-emerald-50">
-                                    {item.medicine?.image ? (
-                                        <img src={item.medicine.image} alt={item.medicine.name} className="h-full w-full rounded-lg object-cover" />
-                                    ) : (
-                                        <Package className="h-5 w-5 text-emerald-400" />
-                                    )}
+                    {order.items.map((item) => {
+                        const medicineId = item.medicineId;
+                        const isReviewed = reviewedMedicineIds[medicineId];
+                        const isActiveForm = activeReviewMedicineId === medicineId;
+                        const myReview = myReviewsByMedicineId[medicineId];
+
+                        return (
+                            <div key={item.id} className="rounded-xl border border-border/70 bg-card p-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-emerald-100 bg-emerald-50">
+                                            {item.medicine?.image ? (
+                                                <img src={item.medicine.image} alt={item.medicine.name} className="h-full w-full rounded-lg object-cover" />
+                                            ) : (
+                                                <Package className="h-5 w-5 text-emerald-400" />
+                                            )}
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-semibold text-foreground">{item.medicine?.name || "Medicine"}</p>
+                                            <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <p className="text-sm font-semibold text-emerald-700">${item.price.toFixed(2)}</p>
+                                        {canSubmitReview && (
+                                            <Button
+                                                variant="outline"
+                                                className="border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+                                                disabled={isReviewed}
+                                                onClick={() => openReviewForm(medicineId)}
+                                            >
+                                                {isReviewed ? "Reviewed" : "Write Review"}
+                                            </Button>
+                                        )}
+                                    </div>
                                 </div>
-                                <div>
-                                    <p className="text-sm font-semibold text-foreground">{item.medicine?.name || "Medicine"}</p>
-                                    <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
-                                </div>
+
+                                {isActiveForm && (
+                                    <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
+                                        <div className="grid gap-4 sm:grid-cols-2">
+                                            <div className="space-y-1.5">
+                                                <Label>Rating</Label>
+                                                <select
+                                                    value={reviewRating}
+                                                    onChange={(e) => setReviewRating(e.target.value)}
+                                                    className="h-11 w-full rounded-xl border border-border bg-card px-3.5 text-sm outline-none transition focus-visible:ring-4 focus-visible:ring-ring/30"
+                                                >
+                                                    <option value="5">5 - Excellent</option>
+                                                    <option value="4">4 - Good</option>
+                                                    <option value="3">3 - Average</option>
+                                                    <option value="2">2 - Poor</option>
+                                                    <option value="1">1 - Very Poor</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div className="mt-3 space-y-1.5">
+                                            <Label>Comment</Label>
+                                            <Textarea
+                                                value={reviewComment}
+                                                onChange={(e) => setReviewComment(e.target.value)}
+                                                className="min-h-24"
+                                                placeholder="Share your experience with this medicine"
+                                            />
+                                        </div>
+
+                                        <div className="mt-4 flex items-center gap-2">
+                                            <Button
+                                                className="bg-emerald-600 hover:bg-emerald-700"
+                                                disabled={submittingReview}
+                                                onClick={() => submitReview(medicineId)}
+                                            >
+                                                {submittingReview ? "Submitting..." : "Submit Review"}
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                onClick={() => setActiveReviewMedicineId(null)}
+                                            >
+                                                Cancel
+                                            </Button>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {myReview && (
+                                    <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+                                        <p className="text-xs font-semibold uppercase tracking-wider text-emerald-700">Your Review</p>
+                                        <p className="mt-2 text-sm font-medium text-emerald-800">Rating: {myReview.rating}/5</p>
+                                        <p className="mt-1 text-sm text-emerald-900/80">
+                                            {myReview.comment || "No comment provided."}
+                                        </p>
+                                    </div>
+                                )}
                             </div>
-                            <p className="text-sm font-semibold text-emerald-700">${item.price.toFixed(2)}</p>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
+                {!canSubmitReview && (
+                    <p className="mt-4 text-sm text-muted-foreground">
+                        Reviews can be submitted by customers after the order is delivered.
+                    </p>
+                )}
             </section>
         </main>
     );
