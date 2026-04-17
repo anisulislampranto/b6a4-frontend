@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { orderService } from "@/services/order.service";
-import type { Order } from "@/types/order.type";
+import type { Order, OrderStatus } from "@/types/order.type";
 import { Card, CardContent } from "@/components/ui/card";
 import { Package, Clock, Truck, CheckCircle2, XCircle, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-const statusConfig = {
+const statusConfig: Record<OrderStatus, { icon: typeof Clock; color: string; bg: string; border: string }> = {
     PENDING: { icon: Clock, color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-100" },
     CONFIRMED: { icon: Package, color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-100" },
     SHIPPED: { icon: Truck, color: "text-indigo-600", bg: "bg-indigo-50", border: "border-indigo-100" },
@@ -80,7 +80,7 @@ export default function OrdersClient() {
 
             <div className="space-y-6">
                 {orders.map((order) => {
-                    const status = statusConfig[order.status as keyof typeof statusConfig] || statusConfig.PENDING;
+                    const status = statusConfig[order.status];
                     const StatusIcon = status.icon;
 
                     return (

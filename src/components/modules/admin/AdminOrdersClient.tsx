@@ -2,12 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { adminService } from "@/services/admin.service";
-import type { Order, OrderStatus } from "@/types/order.type";
+import { ORDER_STATUS_VALUES, type Order, type OrderStatus } from "@/types/order.type";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
-const statusOptions: OrderStatus[] = ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"];
+const statusOptions: OrderStatus[] = [...ORDER_STATUS_VALUES];
 
 type OrderWithOptionalUser = Order & {
     user?: {

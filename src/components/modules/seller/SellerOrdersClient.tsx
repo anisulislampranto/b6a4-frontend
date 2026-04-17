@@ -6,15 +6,9 @@ import { orderService } from "@/services/order.service";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import type { Order, OrderStatus } from "@/types/order.type";
+import { ORDER_STATUS_VALUES, type Order, type OrderStatus } from "@/types/order.type";
 
-const statusOptions: OrderStatus[] = [
-    "PENDING",
-    "CONFIRMED",
-    "SHIPPED",
-    "DELIVERED",
-    "CANCELLED",
-];
+const statusOptions: OrderStatus[] = [...ORDER_STATUS_VALUES];
 
 type OrderWithOptionalUser = Order & {
     user?: {

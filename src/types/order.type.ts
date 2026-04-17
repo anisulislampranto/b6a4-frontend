@@ -1,7 +1,21 @@
 import { MedicineWithRelations } from "./medicine.type";
 
-export type OrderStatus = "PENDING" | "CONFIRMED" | "SHIPPED" | "DELIVERED" | "CANCELLED";
-export type PaymentStatus = "PENDING" | "PAID" | "FAILED";
+export const ORDER_STATUS_VALUES = [
+    "PENDING",
+    "CONFIRMED",
+    "SHIPPED",
+    "DELIVERED",
+    "CANCELLED",
+] as const;
+
+export const PAYMENT_STATUS_VALUES = [
+    "PENDING",
+    "PAID",
+    "FAILED",
+] as const;
+
+export type OrderStatus = (typeof ORDER_STATUS_VALUES)[number];
+export type PaymentStatus = (typeof PAYMENT_STATUS_VALUES)[number];
 
 export interface OrderItem {
     id: string;

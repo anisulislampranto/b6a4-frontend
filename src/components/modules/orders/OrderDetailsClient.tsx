@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { orderService } from "@/services/order.service";
-import type { Order, OrderStatus } from "@/types/order.type";
+import { ORDER_STATUS_VALUES, type Order, type OrderStatus } from "@/types/order.type";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Clock, Package, Truck, CheckCircle2, XCircle, CircleDot } from "lucide-react";
@@ -21,7 +21,7 @@ const timelineSteps: { status: OrderStatus; label: string; description: string }
     { status: "DELIVERED", label: "Delivered", description: "Order has been delivered." },
 ];
 
-const statusOrder: OrderStatus[] = ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"];
+const statusOrder: OrderStatus[] = [...ORDER_STATUS_VALUES];
 
 const statusIconMap: Record<OrderStatus, typeof Clock> = {
     PENDING: Clock,
