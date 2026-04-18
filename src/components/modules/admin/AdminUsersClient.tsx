@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { adminService } from "@/services/admin.service";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { User } from "@/types/user.type";
 import { toast } from "sonner";
 
@@ -84,8 +85,23 @@ export default function AdminUsersClient() {
             </section>
 
             {loading && (
-                <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-700">
-                    Loading users...
+                <div className="grid gap-4">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                        <Card key={i} className="rounded-2xl border-border/70 bg-card/95">
+                            <CardContent className="grid gap-4 p-6 md:grid-cols-[1.4fr_1fr_auto] md:items-end">
+                                <div className="space-y-2">
+                                    <Skeleton className="h-6 w-3/4" />
+                                    <Skeleton className="h-4 w-1/2" />
+                                    <Skeleton className="h-3 w-1/3" />
+                                </div>
+                                <div className="space-y-2">
+                                    <Skeleton className="h-3 w-12" />
+                                    <Skeleton className="h-11 w-full rounded-xl" />
+                                </div>
+                                <Skeleton className="h-10 w-32 rounded-lg" />
+                            </CardContent>
+                        </Card>
+                    ))}
                 </div>
             )}
 

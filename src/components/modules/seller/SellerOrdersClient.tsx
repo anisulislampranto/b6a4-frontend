@@ -6,6 +6,7 @@ import { orderService } from "@/services/order.service";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ORDER_STATUS_VALUES, type Order, type OrderStatus } from "@/types/order.type";
 
 const statusOptions: OrderStatus[] = [...ORDER_STATUS_VALUES];
@@ -102,9 +103,26 @@ export default function SellerOrdersClient() {
 
     if (sessionPending) {
         return (
-            <main className="mx-auto min-h-[70vh] max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-                <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-700">
-                    Loading...
+            <main className="mx-auto min-h-[70vh] max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
+                <section className="rounded-3xl border border-border/70 bg-card/90 px-6 py-7 sm:px-8 space-y-4">
+                    <Skeleton className="h-10 w-64 rounded-lg" />
+                    <Skeleton className="h-4 w-96 rounded-md" />
+                </section>
+                <div className="grid gap-5">
+                    {[1, 2].map(i => (
+                        <Card key={i} className="rounded-2xl border-border/70 bg-card/95 p-6 space-y-4">
+                            <div className="flex justify-between items-center">
+                                <Skeleton className="h-4 w-48" />
+                                <Skeleton className="h-6 w-24 rounded-full" />
+                            </div>
+                            <div className="grid grid-cols-3 gap-4">
+                                <Skeleton className="h-12 rounded-lg" />
+                                <Skeleton className="h-12 rounded-lg" />
+                                <Skeleton className="h-12 rounded-lg" />
+                            </div>
+                            <Skeleton className="h-20 w-full rounded-xl" />
+                        </Card>
+                    ))}
                 </div>
             </main>
         );
@@ -146,8 +164,40 @@ export default function SellerOrdersClient() {
             </section>
 
             {loading && (
-                <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-700">
-                    Loading seller orders...
+                <div className="grid gap-5">
+                    {[1, 2, 3].map((i) => (
+                        <Card key={i} className="rounded-2xl border-border/70 bg-card/95 p-6 space-y-4">
+                            <div className="flex justify-between items-center">
+                                <div className="space-y-2">
+                                    <Skeleton className="h-3 w-20" />
+                                    <Skeleton className="h-4 w-48" />
+                                </div>
+                                <Skeleton className="h-6 w-24 rounded-full" />
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="space-y-2">
+                                    <Skeleton className="h-3 w-16" />
+                                    <Skeleton className="h-4 w-32" />
+                                </div>
+                                <div className="space-y-2">
+                                    <Skeleton className="h-3 w-16" />
+                                    <Skeleton className="h-4 w-24" />
+                                </div>
+                                <div className="space-y-2">
+                                    <Skeleton className="h-3 w-16" />
+                                    <Skeleton className="h-4 w-40" />
+                                </div>
+                            </div>
+                            <Skeleton className="h-24 w-full rounded-xl" />
+                            <div className="flex gap-3 items-end">
+                                <div className="flex-1 space-y-2">
+                                    <Skeleton className="h-3 w-24" />
+                                    <Skeleton className="h-11 w-full rounded-xl" />
+                                </div>
+                                <Skeleton className="h-11 w-32 rounded-xl" />
+                            </div>
+                        </Card>
+                    ))}
                 </div>
             )}
 

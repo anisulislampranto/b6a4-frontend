@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AdminCategoriesClient() {
     const [categories, setCategories] = useState<Category[]>([]);
@@ -135,8 +136,18 @@ export default function AdminCategoriesClient() {
             </Card>
 
             {loading && (
-                <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-700">
-                    Loading categories...
+                <div className="grid gap-4">
+                    {[1, 2, 3, 4].map((i) => (
+                        <Card key={i} className="rounded-2xl border-border/70 bg-card/95">
+                            <CardContent className="grid gap-3 p-6 md:grid-cols-[1fr_auto] md:items-center">
+                                <div className="space-y-2">
+                                    <Skeleton className="h-5 w-40" />
+                                    <Skeleton className="h-4 w-64" />
+                                </div>
+                                <Skeleton className="h-10 w-24 rounded-lg" />
+                            </CardContent>
+                        </Card>
+                    ))}
                 </div>
             )}
 

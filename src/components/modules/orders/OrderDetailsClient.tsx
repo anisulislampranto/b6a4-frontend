@@ -14,6 +14,7 @@ import { reviewService } from "@/services/review.service";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import type { Review } from "@/types/review.type";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const timelineSteps: { status: OrderStatus; label: string; description: string }[] = [
     { status: "PENDING", label: "Order Placed", description: "Your order has been placed successfully." },
@@ -126,10 +127,34 @@ export default function OrderDetailsClient({ orderId }: OrderDetailsClientProps)
 
     if (loading) {
         return (
-            <main className="mx-auto min-h-[70vh] max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-                <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-700">
-                    Loading order details...
+            <main className="mx-auto min-h-[70vh] max-w-6xl px-4 py-10 sm:px-6 lg:px-8 space-y-6">
+                <div className="mb-5">
+                    <Skeleton className="h-10 w-32 rounded-xl" />
                 </div>
+                
+                <section className="mb-6 rounded-3xl border border-border/70 bg-card/95 p-6 sm:p-8 space-y-6">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="space-y-2">
+                            <Skeleton className="h-3 w-20" />
+                            <Skeleton className="h-6 w-64" />
+                        </div>
+                        <Skeleton className="h-8 w-24 rounded-full" />
+                    </div>
+                    <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                        <Skeleton className="h-24 rounded-xl" />
+                        <Skeleton className="h-24 rounded-xl" />
+                        <Skeleton className="h-24 rounded-xl" />
+                    </div>
+                </section>
+
+                <section className="mb-6 rounded-3xl border border-border/70 bg-card/95 p-6 sm:p-8 space-y-4">
+                    <Skeleton className="h-6 w-40" />
+                    <div className="space-y-3">
+                        {[1, 2, 3, 4].map(i => (
+                            <Skeleton key={i} className="h-16 w-full rounded-xl" />
+                        ))}
+                    </div>
+                </section>
             </main>
         );
     }

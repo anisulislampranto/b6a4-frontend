@@ -21,6 +21,7 @@ import DistributionChartCard from "./components/DistributionChartCard";
 import FunnelChartCard from "./components/FunnelChartCard";
 import ActivityTableCard from "./components/ActivityTableCard";
 import DashboardCardSkeleton from "./components/DashboardCardSkeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import { STATUS_COLORS } from "./constants";
 
 const formatCurrency = (amount: number) =>
@@ -165,11 +166,24 @@ export default function DashboardClient() {
 
   if (isPending) {
     return (
-      <main className="mx-auto min-h-[70vh] max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <main className="mx-auto min-h-[70vh] max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
+        <section className="rounded-3xl border border-border/70 bg-card/90 px-6 py-7 sm:px-8 space-y-4">
+          <Skeleton className="h-5 w-24 rounded-full" />
+          <Skeleton className="h-10 w-64 rounded-lg" />
+          <Skeleton className="h-4 w-3/4 rounded-md" />
+          <div className="flex gap-2">
+            <Skeleton className="h-10 w-32 rounded-xl" />
+            <Skeleton className="h-10 w-32 rounded-xl" />
+          </div>
+        </section>
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {Array.from({ length: 4 }).map((_, index) => (
             <DashboardCardSkeleton key={index} />
           ))}
+        </div>
+        <div className="grid gap-4 lg:grid-cols-2">
+            <Skeleton className="h-80 w-full rounded-3xl" />
+            <Skeleton className="h-80 w-full rounded-3xl" />
         </div>
       </main>
     );

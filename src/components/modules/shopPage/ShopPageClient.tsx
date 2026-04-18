@@ -1,6 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -193,7 +194,22 @@ export default function ShopPageClient({
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                    {loading && <span className="col-span-full rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-center text-sm font-medium text-emerald-700">Loading...</span>}
+                    {loading && (
+                        <div className="col-span-full grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                                <Card key={i} className="overflow-hidden rounded-2xl border-border/70 bg-card/95">
+                                    <CardContent className="flex flex-col gap-4 p-5">
+                                        <Skeleton className="h-36 w-full rounded-2xl" />
+                                        <Skeleton className="h-6 w-3/4 rounded-lg" />
+                                        <Skeleton className="h-4 w-1/4 rounded-full" />
+                                        <Skeleton className="h-3 w-1/2 rounded-md" />
+                                        <Skeleton className="h-10 w-full rounded-lg" />
+                                        <Skeleton className="h-10 w-full rounded-lg" />
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                    )}
                     {error && <span className="col-span-full rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-medium text-red-600">{error}</span>}
                     {!loading && medicines.length === 0 && !error && (
                         <div className="col-span-full rounded-2xl border border-border/70 bg-card px-4 py-6 text-center font-medium text-emerald-700">

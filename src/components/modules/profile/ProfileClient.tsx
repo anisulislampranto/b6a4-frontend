@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { User as UserIcon, Mail, Calendar, Loader2 } from "lucide-react";
 import { useForm } from "@tanstack/react-form";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProfileClient() {
     const [user, setUser] = useState<User | null>(null);
@@ -62,9 +63,40 @@ export default function ProfileClient() {
 
     if (loading) {
         return (
-            <div className="flex min-h-[70vh] items-center justify-center">
-                <Loader2 className="h-10 w-10 animate-spin text-emerald-600" />
-            </div>
+            <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+                <header className="mb-8">
+                    <Skeleton className="h-10 w-64 rounded-lg mb-2" />
+                    <Skeleton className="h-4 w-96 rounded-md" />
+                </header>
+                <div className="grid gap-8 lg:grid-cols-3">
+                    <div className="lg:col-span-1 border border-border/70 rounded-3xl overflow-hidden bg-white">
+                        <Skeleton className="h-24 w-full" />
+                        <div className="relative -mt-12 flex flex-col items-center px-6 pb-6 space-y-4">
+                            <Skeleton className="h-24 w-24 rounded-full border-4 border-white" />
+                            <Skeleton className="h-6 w-32 rounded" />
+                            <Skeleton className="h-5 w-20 rounded-full" />
+                        </div>
+                        <div className="p-4 space-y-3 border-t">
+                            <Skeleton className="h-4 w-full" />
+                            <Skeleton className="h-4 w-4/5" />
+                        </div>
+                    </div>
+                    <div className="lg:col-span-2 space-y-6">
+                        <Card className="rounded-3xl p-6 space-y-6">
+                            <Skeleton className="h-8 w-40" />
+                            <div className="space-y-2">
+                                <Skeleton className="h-4 w-20" />
+                                <Skeleton className="h-11 w-full rounded-xl" />
+                            </div>
+                            <div className="space-y-2">
+                                <Skeleton className="h-4 w-40" />
+                                <Skeleton className="h-11 w-full rounded-xl" />
+                            </div>
+                            <Skeleton className="h-11 w-32 rounded-xl" />
+                        </Card>
+                    </div>
+                </div>
+            </main>
         );
     }
 

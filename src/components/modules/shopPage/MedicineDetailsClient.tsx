@@ -11,6 +11,7 @@ import { useAppDispatch } from "@/redux/hooks";
 import { addItem } from "@/redux/features/cart/cartSlice";
 import { toast } from "sonner";
 import { reviewService } from "@/services/review.service";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface MedicineDetailsClientProps {
     medicineId: string;
@@ -53,9 +54,30 @@ export default function MedicineDetailsClient({ medicineId, initialMedicine }: M
     if (loading) {
         return (
             <main className="mx-auto min-h-[70vh] max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-                <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-700">
-                    Loading medicine details...
+                <div className="mb-5">
+                    <Skeleton className="h-10 w-32 rounded-xl" />
                 </div>
+                <Card className="mb-6 overflow-hidden rounded-3xl border-border/70 bg-card/95">
+                    <CardContent className="grid grid-cols-1 gap-8 p-6 sm:p-8 md:grid-cols-2">
+                        <Skeleton className="h-72 w-full rounded-2xl" />
+                        <div className="space-y-5 py-2">
+                            <div className="space-y-2">
+                                <Skeleton className="h-10 w-3/4 rounded-lg" />
+                                <Skeleton className="h-4 w-1/2 rounded-md" />
+                                <Skeleton className="h-4 w-1/3 rounded-md" />
+                            </div>
+                            <Skeleton className="h-24 w-full rounded-lg" />
+                            <div className="space-y-2">
+                                <Skeleton className="h-10 w-24 rounded-lg" />
+                                <Skeleton className="h-4 w-20 rounded-md" />
+                            </div>
+                            <div className="flex gap-3">
+                                <Skeleton className="h-10 w-32 rounded-xl" />
+                                <Skeleton className="h-10 w-32 rounded-xl" />
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
             </main>
         );
     }
@@ -145,8 +167,17 @@ export default function MedicineDetailsClient({ medicineId, initialMedicine }: M
                     <h2 className="text-2xl font-semibold text-foreground">Reviews</h2>
 
                     {loadingReviews ? (
-                        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-                            Loading reviews...
+                        <div className="space-y-3">
+                            {[1, 2].map((i) => (
+                                <div key={i} className="rounded-xl border border-border/70 bg-card p-4 space-y-3">
+                                    <div className="flex justify-between items-center">
+                                        <Skeleton className="h-4 w-32 rounded" />
+                                        <Skeleton className="h-3 w-20 rounded" />
+                                    </div>
+                                    <Skeleton className="h-4 w-24 rounded" />
+                                    <Skeleton className="h-10 w-full rounded" />
+                                </div>
+                            ))}
                         </div>
                     ) : reviews.length === 0 ? (
                         <div className="rounded-xl border border-border/70 bg-card px-4 py-3 text-sm text-muted-foreground">

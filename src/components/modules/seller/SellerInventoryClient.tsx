@@ -17,6 +17,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
     Plus,
     Minus,
@@ -110,9 +111,32 @@ export default function SellerInventoryClient() {
 
     if (sessionPending) {
         return (
-            <main className="mx-auto min-h-[70vh] max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-                <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-700">
-                    Loading...
+            <main className="mx-auto min-h-[70vh] max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
+                <section className="rounded-3xl border border-border/70 bg-card/90 px-6 py-7 sm:px-8 space-y-4">
+                    <Skeleton className="h-10 w-48 rounded-lg" />
+                    <Skeleton className="h-4 w-96 rounded-md" />
+                </section>
+                <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                    {[1, 2, 3].map(i => (
+                        <Card key={i} className="rounded-2xl border-border/70 bg-card/95 p-6 space-y-4">
+                            <Skeleton className="h-7 w-3/4" />
+                            <div className="space-y-2">
+                                <Skeleton className="h-4 w-1/2" />
+                                <Skeleton className="h-4 w-1/3" />
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <Skeleton className="h-6 w-16" />
+                                <Skeleton className="h-4 w-20" />
+                            </div>
+                            <div className="flex justify-between items-center pt-2">
+                                <Skeleton className="h-5 w-16 rounded-full" />
+                                <div className="flex gap-2">
+                                    <Skeleton className="h-8 w-24 rounded-lg" />
+                                    <Skeleton className="h-8 w-32 rounded-lg" />
+                                </div>
+                            </div>
+                        </Card>
+                    ))}
                 </div>
             </main>
         );
@@ -151,8 +175,27 @@ export default function SellerInventoryClient() {
             </section>
 
             {loading && (
-                <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-700">
-                    Loading inventory...
+                <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                        <Card key={i} className="rounded-2xl border-border/70 bg-card/95 p-6 space-y-4">
+                            <Skeleton className="h-7 w-3/4" />
+                            <div className="space-y-2">
+                                <Skeleton className="h-4 w-1/2" />
+                                <Skeleton className="h-4 w-1/3" />
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <Skeleton className="h-6 w-16" />
+                                <Skeleton className="h-4 w-20" />
+                            </div>
+                            <div className="flex justify-between items-center pt-2">
+                                <Skeleton className="h-5 w-16 rounded-full" />
+                                <div className="flex gap-2">
+                                    <Skeleton className="h-8 w-24 rounded-lg" />
+                                    <Skeleton className="h-8 w-32 rounded-lg" />
+                                </div>
+                            </div>
+                        </Card>
+                    ))}
                 </div>
             )}
 

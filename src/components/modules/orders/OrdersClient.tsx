@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Package, Clock, Truck, CheckCircle2, XCircle, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const statusConfig: Record<OrderStatus, { icon: typeof Clock; color: string; bg: string; border: string }> = {
     PENDING: { icon: Clock, color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-100" },
@@ -44,10 +45,54 @@ export default function OrdersClient() {
 
     if (loading) {
         return (
-            <main className="mx-auto max-w-7xl px-4 py-20 text-center">
-                <div className="flex flex-col items-center gap-4">
-                    <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-600/30 border-t-emerald-600" />
-                    <p className="text-muted-foreground font-medium">Loading your orders...</p>
+            <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+                <header className="mb-10">
+                    <Skeleton className="h-10 w-48 rounded-lg mb-2" />
+                    <Skeleton className="h-4 w-96 rounded-md" />
+                </header>
+                <div className="space-y-6">
+                    {[1, 2, 3].map((i) => (
+                        <Card key={i} className="overflow-hidden rounded-3xl border-border/60 bg-card/95 shadow-sm">
+                            <CardContent className="p-0">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 bg-emerald-50/30 border-b border-border/50">
+                                    <div className="space-y-2">
+                                        <Skeleton className="h-3 w-16" />
+                                        <Skeleton className="h-4 w-32" />
+                                    </div>
+                                    <div className="flex gap-3">
+                                        <Skeleton className="h-8 w-24 rounded-full" />
+                                        <Skeleton className="h-8 w-32 rounded-full" />
+                                    </div>
+                                </div>
+                                <div className="p-6">
+                                    <div className="grid gap-6 md:grid-cols-12">
+                                        <div className="md:col-span-8 space-y-4">
+                                            {[1, 2].map(j => (
+                                                <div key={j} className="flex items-center gap-4">
+                                                    <Skeleton className="h-14 w-14 rounded-xl" />
+                                                    <div className="flex-1 space-y-2">
+                                                        <Skeleton className="h-4 w-1/2" />
+                                                        <Skeleton className="h-3 w-1/4" />
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="md:col-span-4 rounded-2xl bg-slate-50/50 p-5 space-y-4 border border-slate-100">
+                                            <div className="space-y-2">
+                                                <Skeleton className="h-2 w-20" />
+                                                <Skeleton className="h-8 w-24" />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Skeleton className="h-2 w-24" />
+                                                <Skeleton className="h-10 w-full" />
+                                            </div>
+                                            <Skeleton className="h-10 w-full rounded-xl" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))}
                 </div>
             </main>
         );
