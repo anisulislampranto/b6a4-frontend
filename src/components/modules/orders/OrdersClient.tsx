@@ -50,44 +50,24 @@ export default function OrdersClient() {
                     <Skeleton className="h-10 w-48 rounded-lg mb-2" />
                     <Skeleton className="h-4 w-96 rounded-md" />
                 </header>
-                <div className="space-y-6">
+                <div className="space-y-1">
                     {[1, 2, 3].map((i) => (
-                        <Card key={i} className="overflow-hidden rounded-3xl border-border/60 bg-card/95 shadow-sm">
-                            <CardContent className="p-0">
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 bg-emerald-50/30 border-b border-border/50">
-                                    <div className="space-y-2">
-                                        <Skeleton className="h-3 w-16" />
-                                        <Skeleton className="h-4 w-32" />
-                                    </div>
-                                    <div className="flex gap-3">
-                                        <Skeleton className="h-8 w-24 rounded-full" />
-                                        <Skeleton className="h-8 w-32 rounded-full" />
-                                    </div>
-                                </div>
-                                <div className="p-6">
-                                    <div className="grid gap-6 md:grid-cols-12">
-                                        <div className="md:col-span-8 space-y-4">
-                                            {[1, 2].map(j => (
-                                                <div key={j} className="flex items-center gap-4">
-                                                    <Skeleton className="h-14 w-14 rounded-xl" />
-                                                    <div className="flex-1 space-y-2">
-                                                        <Skeleton className="h-4 w-1/2" />
-                                                        <Skeleton className="h-3 w-1/4" />
-                                                    </div>
-                                                </div>
-                                            ))}
+                        <Card key={i} className="overflow-hidden py-1 rounded-2xl border-border/50 bg-card/95 shadow-sm">
+                            <CardContent className="p-4 sm:p-5">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                    <div className="flex items-center gap-4">
+                                        <Skeleton className="h-12 w-12 rounded-xl" />
+                                        <div className="space-y-2">
+                                            <Skeleton className="h-4 w-32" />
+                                            <Skeleton className="h-3 w-20" />
                                         </div>
-                                        <div className="md:col-span-4 rounded-2xl bg-slate-50/50 p-5 space-y-4 border border-slate-100">
-                                            <div className="space-y-2">
-                                                <Skeleton className="h-2 w-20" />
-                                                <Skeleton className="h-8 w-24" />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Skeleton className="h-2 w-24" />
-                                                <Skeleton className="h-10 w-full" />
-                                            </div>
-                                            <Skeleton className="h-10 w-full rounded-xl" />
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <div className="hidden sm:block text-right space-y-2">
+                                            <Skeleton className="h-3 w-16 ml-auto" />
+                                            <Skeleton className="h-5 w-24 ml-auto" />
                                         </div>
+                                        <Skeleton className="h-10 w-28 rounded-xl" />
                                     </div>
                                 </div>
                             </CardContent>
@@ -124,75 +104,65 @@ export default function OrdersClient() {
                 <p className="text-muted-foreground mt-1">Track and manage your recent prescriptions and purchases.</p>
             </header>
 
-            <div className="space-y-6">
+            <div className="space-y-1">
                 {orders.map((order) => {
                     const status = statusConfig[order.status];
                     const StatusIcon = status.icon;
+                    const itemsCount = order.items.reduce((acc, item) => acc + item.quantity, 0);
 
                     return (
-                        <Card key={order.id} className="overflow-hidden rounded-3xl border-border/60 bg-card/95 shadow-sm transition-all hover:shadow-md hover:border-emerald-100">
-                            <CardContent className="p-0">
-                                {/* Order Header */}
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 bg-emerald-50/30 border-b border-border/50">
-                                    <div className="space-y-1">
-                                        <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Order ID</p>
-                                        <p className="font-mono text-sm font-bold text-foreground">{order.id.slice(0, 13).toUpperCase()}...</p>
-                                    </div>
-                                    <div className="flex flex-wrap items-center gap-3">
-                                        <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full ${status.bg} ${status.color} ${status.border} border`}>
-                                            <StatusIcon className="h-4 w-4" />
-                                            <span className="text-xs font-black uppercase tracking-wider">{order.status}</span>
+                        <Card key={order.id} className="py-1 overflow-hidden rounded-2xl border-border/50 bg-card/95 shadow-sm transition-all hover:shadow-md hover:border-emerald-200">
+                            <CardContent className="p-4 sm:p-5">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                    {/* Left: Item Summary */}
+                                    <div className="flex items-center gap-4 flex-1 min-w-0">
+                                        <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 border border-emerald-100/50 p-2">
+                                            {order.items[0]?.medicine?.image ? (
+                                                <Image
+                                                    src={order.items[0].medicine.image}
+                                                    alt={order.items[0].medicine.name}
+                                                    width={48}
+                                                    height={48}
+                                                    className="h-full w-full object-cover rounded-lg"
+                                                />
+                                            ) : (
+                                                <Package className="h-6 w-6 text-emerald-300" />
+                                            )}
+                                            {order.items.length > 1 && (
+                                                <span className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-emerald-600 text-[10px] font-black text-white shadow-sm">
+                                                    +{order.items.length - 1}
+                                                </span>
+                                            )}
                                         </div>
-                                        <div className="px-3 py-1.5 rounded-full bg-white border border-border/60 text-xs font-bold text-muted-foreground">
-                                            {new Date(order.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium' })}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Order Content */}
-                                <div className="p-6">
-                                    <div className="grid gap-6 md:grid-cols-12">
-                                        <div className="md:col-span-8 space-y-4">
-                                            {order.items.map((item) => (
-                                                <div key={item.id} className="flex items-center gap-4 group">
-                                                    <div className="h-14 w-14 shrink-0 rounded-xl bg-emerald-50/50 border border-emerald-100/50 flex items-center justify-center p-1">
-                                                        {item.medicine?.image ? (
-                                                            <Image
-                                                                src={item.medicine.image}
-                                                                alt={item.medicine.name}
-                                                                width={56}
-                                                                height={56}
-                                                                className="h-full w-full object-cover rounded-lg"
-                                                            />
-                                                        ) : (
-                                                            <Package className="h-6 w-6 text-emerald-200" />
-                                                        )}
-                                                    </div>
-                                                    <div className="flex-1 min-w-0">
-                                                        <p className="text-sm font-bold text-foreground group-hover:text-emerald-700 transition-colors uppercase truncate">
-                                                            {item.medicine?.name}
-                                                        </p>
-                                                        <p className="text-xs text-muted-foreground font-medium">Qty: {item.quantity} × ${item.price.toFixed(2)}</p>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-
-                                        <div className="md:col-span-4 rounded-2xl bg-slate-50/50 p-5 space-y-4 border border-slate-100">
-                                            <div className="space-y-1">
-                                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Amount</p>
-                                                <p className="text-2xl font-black text-emerald-800">${order.totalAmount.toFixed(2)}</p>
+                                        <div className="min-w-0 flex-1">
+                                            <div className="flex items-center gap-2 mb-0.5">
+                                                <span className={`flex items-center gap-1 text-[10px] font-black uppercase tracking-wider ${status.color}`}>
+                                                    <StatusIcon className="h-3 w-3" />
+                                                    {order.status}
+                                                </span>
+                                                <span className="text-[10px] font-bold text-muted-foreground/60">•</span>
+                                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                                                    {new Date(order.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium' })}
+                                                </span>
                                             </div>
-                                            <div className="space-y-1">
-                                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Shipping Address</p>
-                                                <p className="text-[13px] leading-relaxed font-medium text-slate-600 italic">
-                                                    &quot;{order.address}&quot;
-                                                </p>
-                                            </div>
-                                            <Button asChild variant="outline" className="w-full border-emerald-200 text-emerald-700 hover:bg-emerald-50">
-                                                <Link href={`/orders/${order.id}`}>View Details</Link>
-                                            </Button>
+                                            <h3 className="text-sm font-black text-foreground uppercase truncate tracking-tight">
+                                                {order.items.map(i => i.medicine?.name).join(", ")}
+                                            </h3>
+                                            <p className="text-xs font-medium text-muted-foreground truncate opacity-70">
+                                                Order ID: <span className="font-mono">{order.id.slice(0, 10).toUpperCase()}</span>
+                                            </p>
                                         </div>
+                                    </div>
+
+                                    {/* Right: Actions & Price */}
+                                    <div className="flex items-center justify-between sm:justify-end gap-6 border-t sm:border-t-0 pt-4 sm:pt-0">
+                                        <div className="sm:text-right">
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-0.5">Total Amount</p>
+                                            <p className="text-xl font-black text-emerald-800 leading-none">${order.totalAmount.toFixed(2)}</p>
+                                        </div>
+                                        <Button asChild variant="outline" size="sm" className="h-10 rounded-xl border-emerald-100 text-emerald-700 hover:bg-emerald-50 font-bold px-5">
+                                            <Link href={`/orders/${order.id}`}>View Details</Link>
+                                        </Button>
                                     </div>
                                 </div>
                             </CardContent>
