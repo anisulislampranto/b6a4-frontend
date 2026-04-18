@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -84,9 +85,14 @@ export default function MedicineDetailsClient({ medicineId, initialMedicine }: M
 
             <Card className="mb-6 overflow-hidden rounded-3xl border-border/70 bg-card/95">
                 <CardContent className="grid grid-cols-1 gap-8 p-6 sm:p-8 md:grid-cols-2">
-                    <div className="rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-100 to-emerald-50 p-4">
+                    <div className="relative h-72 rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-100 to-emerald-50 p-4">
                         {medicine.image ? (
-                            <img src={medicine.image} alt={medicine.name} className="h-full w-full rounded-xl object-cover" />
+                            <Image
+                                src={medicine.image}
+                                alt={medicine.name}
+                                fill
+                                className="rounded-xl object-cover p-4"
+                            />
                         ) : (
                             <div className="flex h-72 items-center justify-center rounded-xl bg-emerald-50 text-sm font-semibold text-emerald-600">
                                 No Image

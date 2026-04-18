@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { orderService } from "@/services/order.service";
 import type { Order, OrderStatus } from "@/types/order.type";
 import { Card, CardContent } from "@/components/ui/card";
@@ -111,7 +112,13 @@ export default function OrdersClient() {
                                                 <div key={item.id} className="flex items-center gap-4 group">
                                                     <div className="h-14 w-14 shrink-0 rounded-xl bg-emerald-50/50 border border-emerald-100/50 flex items-center justify-center p-1">
                                                         {item.medicine?.image ? (
-                                                            <img src={item.medicine.image} alt={item.medicine.name} className="h-full w-full object-cover rounded-lg" />
+                                                            <Image
+                                                                src={item.medicine.image}
+                                                                alt={item.medicine.name}
+                                                                width={56}
+                                                                height={56}
+                                                                className="h-full w-full object-cover rounded-lg"
+                                                            />
                                                         ) : (
                                                             <Package className="h-6 w-6 text-emerald-200" />
                                                         )}

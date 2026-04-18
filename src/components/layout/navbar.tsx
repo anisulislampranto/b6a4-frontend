@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, LogOut, ShoppingBag, ClipboardList, UserCog } from "lucide-react";
 import { useAppSelector } from "@/redux/hooks";
 import { selectCartCount } from "@/redux/features/cart/cartSlice";
@@ -105,8 +106,10 @@ const Navbar = ({
           <div className="flex items-center gap-8">
             {/* Logo */}
             <Link href={logo.url} className="flex items-center gap-2 rounded-xl px-2 py-1.5 transition hover:bg-accent/70">
-              <img
+              <Image
                 src={logo.src}
+                width={150}
+                height={48}
                 className="h-12 w-auto dark:invert"
                 alt={logo.alt}
               />
@@ -193,8 +196,10 @@ const Navbar = ({
           <div className="flex items-center justify-between py-3">
             {/* Logo */}
             <Link href={logo.url} className="flex items-center gap-2 rounded-xl px-2 py-1">
-              <img
+              <Image
                 src={logo.src}
+                width={120}
+                height={40}
                 className="h-10 w-auto dark:invert"
                 alt={logo.alt}
               />
@@ -225,8 +230,10 @@ const Navbar = ({
                   <SheetHeader>
                     <SheetTitle>
                       <Link href={logo.url} className="flex items-center gap-2 rounded-xl px-1 py-1">
-                        <img
+                        <Image
                           src={logo.src}
+                          width={120}
+                          height={40}
                           className="h-10 w-auto dark:invert"
                           alt={logo.alt}
                         />

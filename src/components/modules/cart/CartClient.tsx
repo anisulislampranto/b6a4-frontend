@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { removeItem, updateQuantity, selectCartItems, selectCartTotal } from "@/redux/features/cart/cartSlice";
 import { Button } from "@/components/ui/button";
@@ -44,7 +45,13 @@ export default function CartClient() {
                                 <div className="flex gap-4 sm:gap-6">
                                     <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-xl border border-emerald-100 bg-emerald-50 sm:h-32 sm:w-32">
                                         {item.image ? (
-                                            <img src={item.image} alt={item.name} className="h-full w-full rounded-xl object-cover" />
+                                            <Image
+                                                src={item.image}
+                                                alt={item.name}
+                                                width={128}
+                                                height={128}
+                                                className="h-full w-full rounded-xl object-cover"
+                                            />
                                         ) : (
                                             <ShoppingBag className="h-8 w-8 text-emerald-200" />
                                         )}

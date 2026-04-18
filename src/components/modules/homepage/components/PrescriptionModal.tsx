@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Image from "next/image";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Upload, X, Loader2, CheckCircle2, AlertCircle, ShoppingCart, Search, FileWarning } from "lucide-react";
@@ -144,8 +145,14 @@ export default function PrescriptionModal({ isOpen, onClose }: PrescriptionModal
                             />
                             {preview ? (
                                 <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-emerald-200">
-                                    <img src={preview} alt="Prescription preview" className="w-full h-full object-cover" />
-                                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                                    <Image
+                                        src={preview}
+                                        alt="Prescription preview"
+                                        fill
+                                        unoptimized
+                                        className="w-full h-full object-cover"
+                                    />
+                                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity z-10">
                                         <p className="text-white font-medium flex items-center gap-2">
                                             <Upload className="w-5 h-5" /> Change Image
                                         </p>
