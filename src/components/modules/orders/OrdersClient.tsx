@@ -22,14 +22,18 @@ export default function OrdersClient() {
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [page, setPage] = useState(1);
+    const [meta, setMeta] = useState<{ totalPages: number; total: number } | null>(null);
+    const limit = 5;
 
     useEffect(() => {
         const fetchOrders = async () => {
             setLoading(true);
             try {
-                const { ok, data } = await orderService.getMyOrders();
+                const { ok, data } = await orderService.getMyOrders({ page, limit });
                 if (ok) {
                     setOrders(data?.data || []);
+                    setMeta(data?.meta || null);
                 } else {
                     setError("Failed to fetch your orders.");
                 }
@@ -41,7 +45,7 @@ export default function OrdersClient() {
         };
 
         fetchOrders();
-    }, []);
+    }, [page]);
 
     if (loading) {
         return (
@@ -170,6 +174,52 @@ export default function OrdersClient() {
                     );
                 })}
             </div>
+
+            {meta && meta.totalPages > 1 && (
+                <div className="mt-10 flex items-center justify-end gap-4 border-t border-border/40 pt-8">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={page === 1}
+                        onClick={() => {
+                            setPage(prev => Math.max(1, prev - 1));
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+                        }}
+                        className="rounded-xl border-emerald-100 text-emerald-700 hover:bg-emerald-50 disabled:opacity-30"
+                    >
+                        Previous
+                    </Button>
+                    <div className="flex items-center gap-2">
+                        {Array.from({ length: meta.totalPages }, (_, i) => i + 1).map((p) => (
+                            <button
+                                key={p}
+                                onClick={() => {
+                                    setPage(p);
+                                    window.scrollTo({ top: 0, behavior: "smooth" });
+                                }}
+                                className={`flex h-9 w-9 items-center justify-center rounded-xl text-sm font-bold transition-all ${page === p
+                                    ? "bg-emerald-600 text-white shadow-lg shadow-emerald-200"
+                                    : "text-muted-foreground hover:bg-emerald-50 hover:text-emerald-700"
+                                    }`}
+                            >
+                                {p}
+                            </button>
+                        ))}
+                    </div>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={page === meta?.totalPages}
+                        onClick={() => {
+                            setPage(prev => Math.min(meta?.totalPages || 0, prev + 1));
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+                        }}
+                        className="rounded-xl border-emerald-100 text-emerald-700 hover:bg-emerald-50 disabled:opacity-30"
+                    >
+                        Next
+                    </Button>
+                </div>
+            )}
         </main>
     );
 }

@@ -14,8 +14,15 @@ const createOrder = async (payload: CreateOrderPayload) => {
     });
 };
 
-const getMyOrders = async () => {
-    return requestJSONWithStatus<ApiResponse<Order[]>>(`${API_BASE_URL}/orders/my`, {
+const getMyOrders = async (params?: { page?: number; limit?: number }) => {
+    const query = new URLSearchParams();
+    if (params?.page) query.append("page", params.page.toString());
+    if (params?.limit) query.append("limit", params.limit.toString());
+
+    const queryString = query.toString();
+    const url = `${API_BASE_URL}/orders/my${queryString ? `?${queryString}` : ""}`;
+
+    return requestJSONWithStatus<ApiResponse<Order[]>>(url, {
         credentials: "include",
     });
 };
