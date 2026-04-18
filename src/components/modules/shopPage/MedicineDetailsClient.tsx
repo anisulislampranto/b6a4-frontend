@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { medicineService } from "@/services/medicine.service";
 import type { MedicineWithRelations } from "@/types/medicine.type";
 import type { Review } from "@/types/review.type";
 import { useAppDispatch } from "@/redux/hooks";
@@ -14,43 +13,16 @@ import { reviewService } from "@/services/review.service";
 
 interface MedicineDetailsClientProps {
     medicineId: string;
+    initialMedicine: MedicineWithRelations | null;
 }
 
-export default function MedicineDetailsClient({ medicineId }: MedicineDetailsClientProps) {
+export default function MedicineDetailsClient({ medicineId, initialMedicine }: MedicineDetailsClientProps) {
     const dispatch = useAppDispatch();
-    const [medicine, setMedicine] = useState<MedicineWithRelations | null>(null);
+    const [medicine, setMedicine] = useState<MedicineWithRelations | null>(initialMedicine);
     const [reviews, setReviews] = useState<Review[]>([]);
     const [loading, setLoading] = useState(true);
     const [loadingReviews, setLoadingReviews] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        let cancelled = false;
-
-        const loadMedicine = async () => {
-            setLoading(true);
-            setError(null);
-            try {
-                const { ok, data } = await medicineService.getMedicineById(medicineId);
-                if (!ok || !data?.data) {
-                    if (!cancelled) setError(data?.message || "Medicine not found.");
-                    return;
-                }
-
-                if (!cancelled) setMedicine(data.data);
-            } catch {
-                if (!cancelled) setError("Failed to load medicine details.");
-            } finally {
-                if (!cancelled) setLoading(false);
-            }
-        };
-
-        loadMedicine();
-
-        return () => {
-            cancelled = true;
-        };
-    }, [medicineId]);
 
     useEffect(() => {
         let cancelled = false;

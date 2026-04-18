@@ -15,7 +15,19 @@ import { useAppDispatch } from "@/redux/hooks";
 import { addItem } from "@/redux/features/cart/cartSlice";
 import { toast } from "sonner";
 
-export default function ShopPageClient() {
+export default function ShopPageClient({
+    initialMedicines,
+    initialCategories,
+    initialBrands,
+}: {
+    initialMedicines: MedicineWithRelations[];
+    initialCategories: Category[];
+    initialBrands: Brand[];
+}) {
+    const [medicines, setMedicines] = useState(initialMedicines);
+    const [categories, setCategories] = useState(initialCategories);
+    const [brands, setBrands] = useState(initialBrands);
+
     const dispatch = useAppDispatch();
     const [filters, setFilters] = useState({
         search: "",
@@ -24,9 +36,7 @@ export default function ShopPageClient() {
         minPrice: "",
         maxPrice: "",
     });
-    const [medicines, setMedicines] = useState<MedicineWithRelations[]>([]);
-    const [categories, setCategories] = useState<Category[]>([]);
-    const [brands, setBrands] = useState<Brand[]>([]);
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -212,7 +222,7 @@ export default function ShopPageClient() {
                                     Brand: <span className="text-foreground">{p.brand.name}</span>
                                 </span>
                                 <p className="text-xl font-bold text-emerald-700">${p.price}</p>
-                                <Button 
+                                <Button
                                     className="bg-emerald-600 hover:bg-emerald-700"
                                     onClick={() => {
                                         dispatch(addItem(p));
