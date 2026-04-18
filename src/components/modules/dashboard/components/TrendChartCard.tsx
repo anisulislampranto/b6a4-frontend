@@ -69,18 +69,18 @@ export default function TrendChartCard({
 
                 {variant === "bars"
                   ? points.map((point) => (
-                      <rect
-                        key={`${point.label}-${point.x}`}
-                        x={Math.max(point.x - 2.5, 0)}
-                        y={point.y}
-                        width="5"
-                        height={Math.max(56 - point.y, 0.4)}
-                        rx="0.8"
-                        fill={color}
-                      >
-                        <title>{`${point.label}: ${point.value}`}</title>
-                      </rect>
-                    ))
+                    <rect
+                      key={`${point.label}-${point.x}`}
+                      x={Math.max(point.x - 2.5, 0)}
+                      y={point.y}
+                      width="5"
+                      height={Math.max(56 - point.y, 0.4)}
+                      rx="0.8"
+                      fill={color}
+                    >
+                      <title>{`${point.label}: ${point.value}`}</title>
+                    </rect>
+                  ))
                   : null}
 
                 {(variant === "line" || variant === "area") && trendPath ? (
@@ -94,10 +94,10 @@ export default function TrendChartCard({
 
                 {variant !== "bars"
                   ? points.map((point) => (
-                      <circle key={`${point.label}-${point.x}`} cx={point.x} cy={point.y} r="1.4" fill={color}>
-                        <title>{`${point.label}: ${point.value}`}</title>
-                      </circle>
-                    ))
+                    <circle key={`${point.label}-${point.x}`} cx={point.x} cy={point.y} r="1.4" fill={color}>
+                      <title>{`${point.label}: ${point.value}`}</title>
+                    </circle>
+                  ))
                   : null}
               </svg>
             </div>
