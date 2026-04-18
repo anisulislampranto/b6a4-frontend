@@ -120,7 +120,7 @@ export default function OrdersClient() {
                                             {order.items[0]?.medicine?.image ? (
                                                 <Image
                                                     src={order.items[0].medicine.image}
-                                                    alt={order.items[0].medicine.name}
+                                                    alt={order.items[0].medicine.name || 'img'}
                                                     width={48}
                                                     height={48}
                                                     className="h-full w-full object-cover rounded-lg"

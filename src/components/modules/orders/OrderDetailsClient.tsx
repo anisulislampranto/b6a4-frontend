@@ -131,7 +131,7 @@ export default function OrderDetailsClient({ orderId }: OrderDetailsClientProps)
                 <div className="mb-5">
                     <Skeleton className="h-10 w-32 rounded-xl" />
                 </div>
-                
+
                 <section className="mb-6 rounded-3xl border border-border/70 bg-card/95 p-6 sm:p-8 space-y-6">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <div className="space-y-2">
@@ -318,7 +318,7 @@ export default function OrderDetailsClient({ orderId }: OrderDetailsClientProps)
                                             {item.medicine?.image ? (
                                                 <Image
                                                     src={item.medicine.image}
-                                                    alt={item.medicine.name}
+                                                    alt={item.medicine.name || 'medicine img'}
                                                     width={48}
                                                     height={48}
                                                     className="h-full w-full rounded-lg object-cover"
