@@ -50,7 +50,7 @@ export default function OrdersClient() {
                     <Skeleton className="h-10 w-48 rounded-lg mb-2" />
                     <Skeleton className="h-4 w-96 rounded-md" />
                 </header>
-                <div className="space-y-1">
+                <div className="space-y-4">
                     {[1, 2, 3].map((i) => (
                         <Card key={i} className="overflow-hidden py-1 rounded-2xl border-border/50 bg-card/95 shadow-sm">
                             <CardContent className="p-4 sm:p-5">
@@ -104,7 +104,7 @@ export default function OrdersClient() {
                 <p className="text-muted-foreground mt-1">Track and manage your recent prescriptions and purchases.</p>
             </header>
 
-            <div className="space-y-1">
+            <div className="space-y-4">
                 {orders.map((order) => {
                     const status = statusConfig[order.status];
                     const StatusIcon = status.icon;
