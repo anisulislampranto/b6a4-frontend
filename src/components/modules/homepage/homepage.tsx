@@ -1,8 +1,14 @@
+"use client"
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Truck, ShieldCheck, MessageCircle, CreditCard } from 'lucide-react';
+import { useState } from "react";
+import PrescriptionModal from "./components/PrescriptionModal";
 
 export default function Homepage() {
+    const [isPrescriptionModalOpen, setPrescriptionModalOpen] = useState(false);
+
     return (
         <main className="min-h-screen px-4 pb-10 pt-8 sm:px-6 lg:px-8">
             <section className="relative mx-auto max-w-7xl overflow-hidden rounded-3xl border border-border/70 bg-card/85 px-6 py-14 shadow-[0_24px_60px_-40px_rgba(15,23,42,0.5)] sm:px-10 lg:py-16">
@@ -20,7 +26,13 @@ export default function Homepage() {
                         </p>
                         <div className="flex flex-col justify-center gap-3 sm:flex-row sm:gap-4 lg:justify-start">
                             <Button className="bg-emerald-600 hover:bg-emerald-700">Get Started</Button>
-                            <Button variant="outline" className="border-emerald-600 text-emerald-700 hover:bg-emerald-50">Upload Prescription</Button>
+                            <Button
+                                variant="outline"
+                                className="border-emerald-600 text-emerald-700 hover:bg-emerald-50"
+                                onClick={() => setPrescriptionModalOpen(true)}
+                            >
+                                Upload Prescription
+                            </Button>
                         </div>
                         <div className="mt-8 grid grid-cols-3 gap-3 text-left">
                             <div className="rounded-2xl border border-border/70 bg-white/80 px-3 py-3 shadow-sm">
@@ -101,6 +113,11 @@ export default function Homepage() {
                 <p className="mb-8 text-emerald-100">Join MediStore today and get medicines delivered fast.</p>
                 <Button className="bg-white text-emerald-700 hover:bg-emerald-100">Sign Up Free</Button>
             </section>
+
+            <PrescriptionModal
+                isOpen={isPrescriptionModalOpen}
+                onClose={() => setPrescriptionModalOpen(false)}
+            />
         </main>
     );
 }
