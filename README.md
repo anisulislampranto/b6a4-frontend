@@ -49,16 +49,16 @@ Notes:
 
 ```bash
 cd b6a4-frontend
-npm install
+pnpm install
 ```
 
 ## Scripts
 
 ```bash
-npm run dev
-npm run build
-npm run start
-npm run lint
+pnpm run dev
+pnpm run build
+pnpm run start
+pnpm run lint
 ```
 
 ## Routes (Implemented)
@@ -99,7 +99,7 @@ Start backend first, then frontend:
 
 ```bash
 cd b6a4-frontend
-npm run dev
+pnpm run dev
 ```
 
 App runs at `http://localhost:3000`.
