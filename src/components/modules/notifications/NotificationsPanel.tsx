@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Bell, CheckCheck, Dot } from "lucide-react";
+import { Bell, CheckCheck, Dot, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Notification } from "@/types/notification.type";
@@ -124,7 +124,7 @@ export default function NotificationsPanel({ open, refreshKey, onUnreadCountChan
             disabled={loading}
             className="rounded-xl"
           >
-            Refresh
+            <RotateCcw className="size-4" />
           </Button>
           <Button
             type="button"
@@ -135,7 +135,6 @@ export default function NotificationsPanel({ open, refreshKey, onUnreadCountChan
             className="rounded-xl"
           >
             <CheckCheck className="size-4" />
-            Mark all read
           </Button>
         </div>
       </div>
