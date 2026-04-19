@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { medicineService } from "@/services/medicine.service";
 import { inventoryService } from "@/services/inventory.service";
 import type { MedicineWithRelations } from "@/types/medicine.type";
@@ -26,6 +26,7 @@ export default function ShopPageClient({
     initialCategories: Category[];
     initialBrands: Brand[];
 }) {
+    const initialMedicinesRef = useRef(initialMedicines);
     const [medicines, setMedicines] = useState(initialMedicines);
     const [categories, setCategories] = useState(initialCategories);
     const [brands, setBrands] = useState(initialBrands);
@@ -38,6 +39,7 @@ export default function ShopPageClient({
         minPrice: "",
         maxPrice: "",
     });
+    const [searchInput, setSearchInput] = useState("");
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -67,10 +69,27 @@ export default function ShopPageClient({
         [filters]
     );
 
+    // Debounce search so we don't fetch on every keystroke.
+    useEffect(() => {
+        const handle = setTimeout(() => {
+            setFilters((prev) => ({ ...prev, search: searchInput }));
+        }, 400);
+
+        return () => clearTimeout(handle);
+    }, [searchInput]);
+
     useEffect(() => {
         let cancelled = false;
 
         const load = async () => {
+            // On first load (no filters), we already have SSR medicines.
+            if (Object.keys(activeFilters).length === 0) {
+                setError(null);
+                setLoading(false);
+                setMedicines(initialMedicinesRef.current);
+                return;
+            }
+
             setLoading(true);
             setError(null);
             try {
@@ -109,6 +128,9 @@ export default function ShopPageClient({
             minPrice: "",
             maxPrice: "",
         });
+        setSearchInput("");
+        setMedicines(initialMedicinesRef.current);
+        setError(null);
     };
 
     return (
@@ -120,14 +142,14 @@ export default function ShopPageClient({
                     </div>
                     <div className="grid grid-cols-1 items-end gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
                         {/* Search */}
-                        <div className="space-y-1.5">
-                            <Label className="text-sm font-semibold text-foreground/90">Search</Label>
-                            <Input
-                                placeholder="Search medicines..."
-                                value={filters.search}
-                                onChange={(e) => updateFilter("search")(e.target.value)}
-                            />
-                        </div>
+	                        <div className="space-y-1.5">
+	                            <Label className="text-sm font-semibold text-foreground/90">Search</Label>
+	                            <Input
+	                                placeholder="Search medicines..."
+	                                value={searchInput}
+	                                onChange={(e) => setSearchInput(e.target.value)}
+	                            />
+	                        </div>
 
                         {/* Category dropdown */}
                         <div className="space-y-1.5">
@@ -194,28 +216,6 @@ export default function ShopPageClient({
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                    {loading && (
-                        <div className="col-span-full grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                                <Card key={i} className="overflow-hidden rounded-2xl border-border/70 bg-card/95">
-                                    <CardContent className="flex flex-col gap-4 p-5">
-                                        <Skeleton className="h-36 w-full rounded-2xl" />
-                                        <Skeleton className="h-6 w-3/4 rounded-lg" />
-                                        <Skeleton className="h-4 w-1/4 rounded-full" />
-                                        <Skeleton className="h-3 w-1/2 rounded-md" />
-                                        <Skeleton className="h-10 w-full rounded-lg" />
-                                        <Skeleton className="h-10 w-full rounded-lg" />
-                                    </CardContent>
-                                </Card>
-                            ))}
-                        </div>
-                    )}
-                    {error && <span className="col-span-full rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-medium text-red-600">{error}</span>}
-                    {!loading && medicines.length === 0 && !error && (
-                        <div className="col-span-full rounded-2xl border border-border/70 bg-card px-4 py-6 text-center font-medium text-emerald-700">
-                            No medicines found.
-                        </div>
-                    )}
                     {medicines?.map((p) => (
                         <Card key={p.id} className="group overflow-hidden rounded-2xl border-border/70 bg-card/95 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_30px_-24px_rgba(15,23,42,0.9)]">
                             <CardContent className="flex flex-col gap-4 p-5">
@@ -259,6 +259,28 @@ export default function ShopPageClient({
                             </CardContent>
                         </Card>
                     ))}
+                    {loading && (
+                        <div className="col-span-full grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                                <Card key={i} className="overflow-hidden rounded-2xl border-border/70 bg-card/95">
+                                    <CardContent className="flex flex-col gap-4 p-5">
+                                        <Skeleton className="h-36 w-full rounded-2xl" />
+                                        <Skeleton className="h-6 w-3/4 rounded-lg" />
+                                        <Skeleton className="h-4 w-1/4 rounded-full" />
+                                        <Skeleton className="h-3 w-1/2 rounded-md" />
+                                        <Skeleton className="h-10 w-full rounded-lg" />
+                                        <Skeleton className="h-10 w-full rounded-lg" />
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                    )}
+                    {error && <span className="col-span-full rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-medium text-red-600">{error}</span>}
+                    {!loading && medicines.length === 0 && !error && (
+                        <div className="col-span-full rounded-2xl border border-border/70 bg-card px-4 py-6 text-center font-medium text-emerald-700">
+                            No medicines found.
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
