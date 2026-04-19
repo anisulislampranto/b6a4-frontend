@@ -22,7 +22,6 @@ export default function MedicineDetailsClient({ medicineId, initialMedicine }: M
     const dispatch = useAppDispatch();
     const [medicine, setMedicine] = useState<MedicineWithRelations | null>(initialMedicine);
     const [reviews, setReviews] = useState<Review[]>([]);
-    const [loading, setLoading] = useState(true);
     const [loadingReviews, setLoadingReviews] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -50,37 +49,6 @@ export default function MedicineDetailsClient({ medicineId, initialMedicine }: M
             cancelled = true;
         };
     }, [medicineId]);
-
-    if (loading) {
-        return (
-            <main className="mx-auto min-h-[70vh] max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-                <div className="mb-5">
-                    <Skeleton className="h-10 w-32 rounded-xl" />
-                </div>
-                <Card className="mb-6 overflow-hidden rounded-3xl border-border/70 bg-card/95">
-                    <CardContent className="grid grid-cols-1 gap-8 p-6 sm:p-8 md:grid-cols-2">
-                        <Skeleton className="h-72 w-full rounded-2xl" />
-                        <div className="space-y-5 py-2">
-                            <div className="space-y-2">
-                                <Skeleton className="h-10 w-3/4 rounded-lg" />
-                                <Skeleton className="h-4 w-1/2 rounded-md" />
-                                <Skeleton className="h-4 w-1/3 rounded-md" />
-                            </div>
-                            <Skeleton className="h-24 w-full rounded-lg" />
-                            <div className="space-y-2">
-                                <Skeleton className="h-10 w-24 rounded-lg" />
-                                <Skeleton className="h-4 w-20 rounded-md" />
-                            </div>
-                            <div className="flex gap-3">
-                                <Skeleton className="h-10 w-32 rounded-xl" />
-                                <Skeleton className="h-10 w-32 rounded-xl" />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            </main>
-        );
-    }
 
     if (error || !medicine) {
         return (

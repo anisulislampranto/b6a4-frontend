@@ -28,13 +28,15 @@ async function getMedicine(id: string) {
 export default async function MedicineDetailsPage({
     params,
 }: {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }) {
-    const medicine = await getMedicine(params.id);
+    const { id } = await params; // ✅ Await params first
+
+    const medicine = await getMedicine(id);
 
     return (
         <MedicineDetailsClient
-            medicineId={params.id}
+            medicineId={id}
             initialMedicine={medicine?.data || null}
         />
     );
