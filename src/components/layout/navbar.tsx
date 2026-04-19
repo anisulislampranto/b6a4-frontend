@@ -2,12 +2,16 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, LogOut, ShoppingBag, ClipboardList, UserCog } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Menu, LogOut, ShoppingBag, ClipboardList, UserCog, Bell } from "lucide-react";
 import { useAppSelector } from "@/redux/hooks";
 import { selectCartCount } from "@/redux/features/cart/cartSlice";
 
 import { cn } from "@/lib/utils";
 import { authClient } from "@/lib/auth-client";
+import { getSocket } from "@/lib/socket-client";
+import { notificationService } from "@/services/notification.service";
+import NotificationsPanel from "@/components/modules/notifications/NotificationsPanel";
 
 import {
   Accordion,
@@ -94,9 +98,61 @@ const Navbar = ({
   const userInitial = userName.charAt(0).toUpperCase();
   const isLoggedIn = !!user;
 
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [notificationUnreadCount, setNotificationUnreadCount] = useState(0);
+  const [notificationRefreshKey, setNotificationRefreshKey] = useState(0);
+
   const handleLogout = async () => {
     await authClient.signOut();
+    setNotificationUnreadCount(0);
   };
+
+  useEffect(() => {
+    if (isPending) return;
+    if (!isLoggedIn) return;
+
+    let cancelled = false;
+
+    const loadUnread = async () => {
+      try {
+        const res = await notificationService.listMyNotifications(1);
+        if (cancelled) return;
+        if (res.ok) setNotificationUnreadCount(res.data.data.unreadCount || 0);
+      } catch {
+      }
+    };
+
+    loadUnread();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isPending, isLoggedIn]);
+
+  useEffect(() => {
+    if (isPending) return;
+    if (!isLoggedIn) return;
+
+    const socket = getSocket();
+
+    const handleNew = () => {
+      setNotificationUnreadCount((prev) => prev + 1);
+      setNotificationRefreshKey((prev) => prev + 1);
+    };
+
+    const handleReadAll = () => {
+      setNotificationUnreadCount(0);
+      setNotificationRefreshKey((prev) => prev + 1);
+    };
+
+    socket.on("notification:new", handleNew);
+    socket.on("notification:read-all", handleReadAll);
+
+    return () => {
+      socket.off("notification:new", handleNew);
+      socket.off("notification:read-all", handleReadAll);
+    };
+  }, [isPending, isLoggedIn]);
 
   return (
     <section className={cn("sticky top-0 z-40 border-b border-border/70 bg-background/80 backdrop-blur-xl", className)}>
@@ -136,6 +192,37 @@ const Navbar = ({
             </div>
           </div>
           <div className="flex items-center gap-4">
+            <Sheet open={notificationsOpen} onOpenChange={setNotificationsOpen}>
+              <SheetTrigger asChild>
+                <button
+                  type="button"
+                  className="relative group inline-flex items-center justify-center rounded-xl p-2 transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/30"
+                  aria-label="Open notifications"
+                  title="Notifications"
+                >
+                  <Bell className="size-6 text-foreground/80 group-hover:text-emerald-600 transition-colors" />
+                  {notificationUnreadCount > 0 ? (
+                    <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-emerald-600 px-1.5 text-[10px] font-bold text-white shadow-sm animate-in zoom-in duration-300">
+                      {notificationUnreadCount > 99 ? "99+" : notificationUnreadCount}
+                    </span>
+                  ) : null}
+                </button>
+              </SheetTrigger>
+              <SheetContent className="overflow-y-hidden border-l border-border/70 px-5 sm:max-w-md">
+                <SheetHeader className="px-0">
+                  <SheetTitle className="text-base">Activity</SheetTitle>
+                </SheetHeader>
+                <div className="h-[calc(100vh-96px)] pb-6">
+                  <NotificationsPanel
+                    open={notificationsOpen}
+                    refreshKey={notificationRefreshKey}
+                    onUnreadCountChange={setNotificationUnreadCount}
+                    onNavigate={() => setNotificationsOpen(false)}
+                  />
+                </div>
+              </SheetContent>
+            </Sheet>
+
             <Link href="/cart" className="relative group p-2 rounded-xl hover:bg-accent transition-colors">
               <ShoppingBag className="size-6 text-foreground/80 group-hover:text-emerald-600 transition-colors" />
               {cartCount > 0 && (
@@ -207,6 +294,37 @@ const Navbar = ({
 
             {/* Right side (Cart + Menu) */}
             <div className="flex items-center gap-2">
+              <Sheet open={notificationsOpen} onOpenChange={setNotificationsOpen}>
+                <SheetTrigger asChild>
+                  <button
+                    type="button"
+                    className="relative group inline-flex items-center justify-center rounded-xl p-2 transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/30"
+                    aria-label="Open notifications"
+                    title="Notifications"
+                  >
+                    <Bell className="size-5 text-foreground/80 group-hover:text-emerald-600 transition-colors" />
+                    {notificationUnreadCount > 0 ? (
+                      <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-emerald-600 px-1.5 text-[10px] font-bold text-white shadow-sm">
+                        {notificationUnreadCount > 99 ? "99+" : notificationUnreadCount}
+                      </span>
+                    ) : null}
+                  </button>
+                </SheetTrigger>
+                <SheetContent className="overflow-y-hidden border-l border-border/70 px-5 sm:max-w-md">
+                  <SheetHeader className="pl-0">
+                    <SheetTitle className="text-base">Activity</SheetTitle>
+                  </SheetHeader>
+                  <div className="h-[calc(100vh-96px)] pb-6">
+                    <NotificationsPanel
+                      open={notificationsOpen}
+                      refreshKey={notificationRefreshKey}
+                      onUnreadCountChange={setNotificationUnreadCount}
+                      onNavigate={() => setNotificationsOpen(false)}
+                    />
+                  </div>
+                </SheetContent>
+              </Sheet>
+
               {/* Cart Icon */}
               <Link
                 href="/cart"

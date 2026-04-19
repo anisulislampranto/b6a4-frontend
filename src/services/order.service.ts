@@ -3,6 +3,15 @@ import { requestJSONWithStatus } from "./http.service";
 import type { Order, CreateOrderPayload } from "@/types/order.type";
 import type { ApiResponse } from "@/types/api.type";
 
+interface OrdersWithMetaResponse extends ApiResponse<Order[]> {
+    meta?: {
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    };
+}
+
 const createOrder = async (payload: CreateOrderPayload) => {
     return requestJSONWithStatus<ApiResponse<Order>>(`${API_BASE_URL}/orders`, {
         method: "POST",
@@ -22,7 +31,7 @@ const getMyOrders = async (params?: { page?: number; limit?: number }) => {
     const queryString = query.toString();
     const url = `${API_BASE_URL}/orders/my${queryString ? `?${queryString}` : ""}`;
 
-    return requestJSONWithStatus<ApiResponse<Order[]>>(url, {
+    return requestJSONWithStatus<OrdersWithMetaResponse>(url, {
         credentials: "include",
     });
 };

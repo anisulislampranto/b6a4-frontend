@@ -24,23 +24,37 @@ export default function DistributionChartCard({
 }: DistributionChartCardProps) {
   const total = data.reduce((sum, item) => sum + item.value, 0);
 
-  let cumulativeRatio = 0;
-  const segments = data.map((item, index) => {
+  const segments = data.reduce<
+    {
+      label: string;
+      value: number;
+      ratio: number;
+      dashLength: number;
+      dashOffset: number;
+      color: string;
+    }[]
+  >((acc, item, index) => {
     const ratio = total > 0 ? item.value / total : 0;
     const dashLength = ratio * 100;
+    const cumulativeRatio = acc.reduce((sum, segment) => sum + segment.ratio, 0);
     const dashOffset = -cumulativeRatio * 100;
-    cumulativeRatio += ratio;
 
-    const segmentColor = colorByLabel?.[item.label] || DEFAULT_CHART_COLORS[index % DEFAULT_CHART_COLORS.length] || color;
+    const segmentColor =
+      colorByLabel?.[item.label] ||
+      DEFAULT_CHART_COLORS[index % DEFAULT_CHART_COLORS.length] ||
+      color;
 
-    return {
-      ...item,
+    acc.push({
+      label: item.label,
+      value: item.value,
       ratio,
       dashLength,
       dashOffset,
       color: segmentColor,
-    };
-  });
+    });
+
+    return acc;
+  }, []);
 
   return (
     <Card className="rounded-2xl border-border/70 bg-card/95">
