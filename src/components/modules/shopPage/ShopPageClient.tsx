@@ -217,7 +217,7 @@ export default function ShopPageClient({
 
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     {medicines?.map((p) => (
-                        <Card key={p.id} className="group overflow-hidden rounded-2xl border-border/70 bg-card/95 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_30px_-24px_rgba(15,23,42,0.9)]">
+                        <Card key={p.id} className="py-2 group overflow-hidden rounded-2xl border-border/70 bg-card/95 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_30px_-24px_rgba(15,23,42,0.9)]">
                             <CardContent className="flex flex-col gap-4 p-5">
                                 <Link
                                     href={`/shop/${p.id}`}

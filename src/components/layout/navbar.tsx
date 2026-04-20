@@ -181,7 +181,6 @@ const Navbar = ({
                           href="/orders"
                           className="group inline-flex h-10 w-max items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold text-foreground/85 transition-colors hover:bg-accent hover:text-accent-foreground"
                         >
-                          <ClipboardList className="mr-2 size-4" />
                           My Orders
                         </Link>
                       </NavigationMenuLink>
