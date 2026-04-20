@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import SafeImage from "@/components/ui/SafeImage";
 import { orderService } from "@/services/order.service";
 import type { Order, OrderStatus } from "@/types/order.type";
 import { Card, CardContent } from "@/components/ui/card";
@@ -122,7 +122,7 @@ export default function OrdersClient() {
                                     <div className="flex items-center gap-4 flex-1 min-w-0">
                                         <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 border border-emerald-100/50 p-2">
                                             {order.items[0]?.medicine?.image ? (
-                                                <Image
+                                                <SafeImage
                                                     src={order.items[0].medicine.image}
                                                     alt={order.items[0].medicine.name || 'img'}
                                                     width={48}

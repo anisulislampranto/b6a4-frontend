@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import Image from "next/image";
+import SafeImage from "@/components/ui/SafeImage";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -224,7 +224,7 @@ export default function ShopPageClient({
                                     className="relative flex h-36 items-center justify-center rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-100 to-emerald-50 text-sm font-bold tracking-wide text-emerald-600 outline-none transition hover:opacity-95 focus-visible:ring-4 focus-visible:ring-ring/30 overflow-hidden"
                                 >
                                     {p.image ? (
-                                        <Image
+                                        <SafeImage
                                             src={p.image}
                                             alt={p.name}
                                             fill

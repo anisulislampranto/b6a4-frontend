@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import SafeImage from "@/components/ui/SafeImage";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -77,7 +77,7 @@ export default function MedicineDetailsClient({ medicineId, initialMedicine }: M
                 <CardContent className="grid grid-cols-1 gap-8 p-6 sm:p-8 md:grid-cols-2">
                     <div className="relative h-72 rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-100 to-emerald-50 p-4">
                         {medicine.image ? (
-                            <Image
+                            <SafeImage
                                 src={medicine.image}
                                 alt={medicine.name}
                                 fill

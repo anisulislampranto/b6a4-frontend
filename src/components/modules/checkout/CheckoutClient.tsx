@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ShoppingBag, CreditCard, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
+import SafeImage from "@/components/ui/SafeImage";
 
 export default function CheckoutClient() {
     const items = useAppSelector(selectCartItems);
@@ -168,7 +168,7 @@ export default function CheckoutClient() {
                                     <div key={item.id} className="py-4 flex items-center gap-4">
                                         <div className="h-16 w-16 shrink-0 rounded-xl border border-emerald-100 bg-emerald-50/50 flex items-center justify-center">
                                             {item.image ? (
-                                                <Image
+                                                <SafeImage
                                                     src={item.image}
                                                     alt={item.name}
                                                     width={64}
