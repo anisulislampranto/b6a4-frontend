@@ -20,6 +20,6 @@ export const env = createEnv({
         AUTH_URL: process.env.AUTH_URL,
         NEXT_PUBLIC_TEST: process.env.NEXT_PUBLIC_TEST,
         NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-        NEXT_PUBLIC_AUTH_URL: process.env.AUTH_URL
+        NEXT_PUBLIC_AUTH_URL: process.env.NEXT_PUBLIC_AUTH_URL
     }
 })
