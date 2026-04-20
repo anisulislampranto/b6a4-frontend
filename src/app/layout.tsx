@@ -19,6 +19,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "MediStore - Your Trusted Online Pharmacy",
   description: "Purchase high-quality OTC medicines with home delivery.",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
