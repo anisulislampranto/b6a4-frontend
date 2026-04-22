@@ -43,6 +43,7 @@ export interface CartItem extends MedicineWithRelations {
 
 export interface CreateOrderPayload {
     address: string;
+    paymentMethod: string;
     items: {
         medicineId: string;
         quantity: number;

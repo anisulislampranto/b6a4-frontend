@@ -24,7 +24,7 @@ export default function CheckoutClient() {
     const form = useForm({
         defaultValues: {
             address: "",
-            paymentMethod: "COD" as "COD" | "SSL",
+            paymentMethod: "COD" as "COD" | "STRIPE",
         },
         validators: {
             onChange: checkoutSchema,
@@ -128,17 +128,15 @@ export default function CheckoutClient() {
                                         <div className="space-y-4 pt-4 border-t border-dashed">
                                             <Label className="text-sm font-semibold">Payment Method</Label>
                                             <div className="grid gap-3 sm:grid-cols-2">
-                                                <div 
+                                                <div
                                                     onClick={() => field.handleChange("COD")}
-                                                    className={`cursor-pointer flex items-center gap-3 p-4 rounded-2xl border-2 transition-all ${
-                                                        field.state.value === "COD" 
-                                                        ? "border-emerald-600 bg-emerald-50" 
+                                                    className={`cursor-pointer flex items-center gap-3 p-4 rounded-2xl border-2 transition-all ${field.state.value === "COD"
+                                                        ? "border-emerald-600 bg-emerald-50"
                                                         : "border-border/40 bg-white hover:bg-emerald-50/30"
-                                                    }`}
+                                                        }`}
                                                 >
-                                                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-sm ${
-                                                        field.state.value === "COD" ? "bg-emerald-600 text-white" : "bg-muted text-muted-foreground"
-                                                    }`}>
+                                                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-sm ${field.state.value === "COD" ? "bg-emerald-600 text-white" : "bg-muted text-muted-foreground"
+                                                        }`}>
                                                         <ShoppingBag className="h-5 w-5" />
                                                     </div>
                                                     <div>
@@ -147,22 +145,20 @@ export default function CheckoutClient() {
                                                     </div>
                                                 </div>
 
-                                                <div 
-                                                    onClick={() => field.handleChange("SSL")}
-                                                    className={`cursor-pointer flex items-center gap-3 p-4 rounded-2xl border-2 transition-all ${
-                                                        field.state.value === "SSL" 
-                                                        ? "border-emerald-600 bg-emerald-50" 
+                                                <div
+                                                    onClick={() => field.handleChange("STRIPE")}
+                                                    className={`cursor-pointer flex items-center gap-3 p-4 rounded-2xl border-2 transition-all ${field.state.value === "STRIPE"
+                                                        ? "border-emerald-600 bg-emerald-50"
                                                         : "border-border/40 bg-white hover:bg-emerald-50/30"
-                                                    }`}
+                                                        }`}
                                                 >
-                                                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-sm ${
-                                                        field.state.value === "SSL" ? "bg-emerald-600 text-white" : "bg-muted text-muted-foreground"
-                                                    }`}>
+                                                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-sm ${field.state.value === "STRIPE" ? "bg-emerald-600 text-white" : "bg-muted text-muted-foreground"
+                                                        }`}>
                                                         <CreditCard className="h-5 w-5" />
                                                     </div>
                                                     <div>
-                                                        <p className="text-sm font-bold">Online Payment</p>
-                                                        <p className="text-xs opacity-80">Pay securely using SSLCommerz.</p>
+                                                        <p className="text-sm font-bold">Stripe Payment</p>
+                                                        <p className="text-xs opacity-80">Pay securely using your credit card.</p>
                                                     </div>
                                                 </div>
                                             </div>
