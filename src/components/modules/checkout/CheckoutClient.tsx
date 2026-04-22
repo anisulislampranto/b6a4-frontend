@@ -24,6 +24,7 @@ export default function CheckoutClient() {
     const form = useForm({
         defaultValues: {
             address: "",
+            paymentMethod: "COD" as "COD" | "STRIPE",
         },
         validators: {
             onChange: checkoutSchema,
@@ -33,6 +34,7 @@ export default function CheckoutClient() {
             try {
                 const payload = {
                     address: value.address,
+                    paymentMethod: value.paymentMethod,
                     items: items.map((item) => ({
                         medicineId: item.id,
                         quantity: item.quantity,
@@ -40,6 +42,11 @@ export default function CheckoutClient() {
                 };
 
                 const { ok, data } = await orderService.createOrder(payload);
+
+                if (ok && data?.data?.payment_url) {
+                    window.location.href = data.data.payment_url;
+                    return;
+                }
 
                 if (ok) {
                     toast.success("Order placed successfully!", { id: toastId });
@@ -116,17 +123,48 @@ export default function CheckoutClient() {
                                     )}
                                 </form.Field>
 
-                                <div className="pt-4 border-t border-dashed">
-                                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-emerald-50 text-emerald-800">
-                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-emerald-600 shadow-sm">
-                                            <CreditCard className="h-5 w-5" />
+                                <form.Field name="paymentMethod">
+                                    {(field) => (
+                                        <div className="space-y-4 pt-4 border-t border-dashed">
+                                            <Label className="text-sm font-semibold">Payment Method</Label>
+                                            <div className="grid gap-3 sm:grid-cols-2">
+                                                <div
+                                                    onClick={() => field.handleChange("COD")}
+                                                    className={`cursor-pointer flex items-center gap-3 p-4 rounded-2xl border-2 transition-all ${field.state.value === "COD"
+                                                        ? "border-emerald-600 bg-emerald-50"
+                                                        : "border-border/40 bg-white hover:bg-emerald-50/30"
+                                                        }`}
+                                                >
+                                                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-sm ${field.state.value === "COD" ? "bg-emerald-600 text-white" : "bg-muted text-muted-foreground"
+                                                        }`}>
+                                                        <ShoppingBag className="h-5 w-5" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-sm font-bold">Cash on Delivery</p>
+                                                        <p className="text-xs opacity-80">Pay when you receive the order.</p>
+                                                    </div>
+                                                </div>
+
+                                                <div
+                                                    onClick={() => field.handleChange("STRIPE")}
+                                                    className={`cursor-pointer flex items-center gap-3 p-4 rounded-2xl border-2 transition-all ${field.state.value === "STRIPE"
+                                                        ? "border-emerald-600 bg-emerald-50"
+                                                        : "border-border/40 bg-white hover:bg-emerald-50/30"
+                                                        }`}
+                                                >
+                                                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-sm ${field.state.value === "STRIPE" ? "bg-emerald-600 text-white" : "bg-muted text-muted-foreground"
+                                                        }`}>
+                                                        <CreditCard className="h-5 w-5" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-sm font-bold">Stripe Payment</p>
+                                                        <p className="text-xs opacity-80">Pay securely using your credit card.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <p className="text-sm font-bold">Cash on Delivery</p>
-                                            <p className="text-xs opacity-80">Currently we only support cash on delivery for all orders.</p>
-                                        </div>
-                                    </div>
-                                </div>
+                                    )}
+                                </form.Field>
 
                                 <form.Subscribe
                                     selector={(state) => [state.canSubmit, state.isSubmitting]}
