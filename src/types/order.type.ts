@@ -35,6 +35,7 @@ export interface Order {
     items: OrderItem[];
     createdAt: string;
     updatedAt: string;
+    payment_url?: string;
 }
 
 export interface CartItem extends MedicineWithRelations {
