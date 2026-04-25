@@ -15,6 +15,7 @@ import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import type { Review } from "@/types/review.type";
 import { Skeleton } from "@/components/ui/skeleton";
+import PaymentStatusBadge from "./PaymentStatusBadge";
 
 const timelineSteps: { status: OrderStatus; label: string; description: string }[] = [
     { status: "PENDING", label: "Order Placed", description: "Your order has been placed successfully." },
@@ -239,10 +240,13 @@ export default function OrderDetailsClient({ orderId }: OrderDetailsClientProps)
                         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Order ID</p>
                         <h1 className="font-mono text-lg font-bold text-foreground">{order.id}</h1>
                     </div>
-                    <span className="inline-flex w-fit items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-emerald-700">
-                        <CurrentStatusIcon className="h-4 w-4" />
-                        {order.status}
-                    </span>
+                    <div className="flex flex-wrap gap-2">
+                        <span className="inline-flex w-fit items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-emerald-700">
+                            <CurrentStatusIcon className="h-4 w-4" />
+                            {order.status}
+                        </span>
+                        <PaymentStatusBadge status={order.paymentStatus} />
+                    </div>
                 </div>
 
                 <div className="mt-6 grid gap-4 sm:grid-cols-3">
