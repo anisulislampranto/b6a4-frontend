@@ -19,7 +19,8 @@ import PaymentStatusBadge from "./PaymentStatusBadge";
 
 const timelineSteps: { status: OrderStatus; label: string; description: string }[] = [
     { status: "PENDING", label: "Order Placed", description: "Your order has been placed successfully." },
-    { status: "CONFIRMED", label: "Confirmed", description: "Seller confirmed the order." },
+    { status: "PARTIALLY_CONFIRMED", label: "Partially Confirmed", description: "Some sellers have confirmed your order." },
+    { status: "CONFIRMED", label: "Confirmed", description: "All sellers confirmed the order." },
     { status: "SHIPPED", label: "Shipped", description: "Your package is on the way." },
     { status: "DELIVERED", label: "Delivered", description: "Order has been delivered." },
 ];
@@ -29,6 +30,7 @@ const statusOrder: OrderStatus[] = [...ORDER_STATUS_VALUES];
 const statusIconMap: Record<OrderStatus, typeof Clock> = {
     PENDING: Clock,
     CONFIRMED: Package,
+    PARTIALLY_CONFIRMED: Package,
     SHIPPED: Truck,
     DELIVERED: CheckCircle2,
     CANCELLED: XCircle,
@@ -80,6 +82,27 @@ export default function OrderDetailsClient({ orderId }: OrderDetailsClientProps)
     const progressIndex = useMemo(() => {
         if (!order) return -1;
         return statusOrder.indexOf(order.status);
+    }, [order]);
+
+    const sellerProgress = useMemo(() => {
+        if (!order) return { total: 0, confirmed: 0, progress: "" };
+        const itemsBySeller: Record<string, OrderItem[]> = {};
+        order.items.forEach((item) => {
+            const sId = item.medicine?.sellerId || "unknown";
+            if (!itemsBySeller[sId]) itemsBySeller[sId] = [];
+            itemsBySeller[sId].push(item);
+        });
+
+        const sellers = Object.keys(itemsBySeller);
+        const confirmedSellers = sellers.filter((sId) =>
+            itemsBySeller[sId].every((item) => item.status !== "PENDING" && item.status !== "CANCELLED")
+        );
+
+        return {
+            total: sellers.length,
+            confirmed: confirmedSellers.length,
+            progress: `${confirmedSellers.length} of ${sellers.length} sellers confirmed`,
+        };
     }, [order]);
 
     useEffect(() => {
@@ -240,7 +263,12 @@ export default function OrderDetailsClient({ orderId }: OrderDetailsClientProps)
                         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Order ID</p>
                         <h1 className="font-mono text-lg font-bold text-foreground">{order.id}</h1>
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 items-center">
+                        {order.status === "PARTIALLY_CONFIRMED" && (
+                            <span className="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
+                                {sellerProgress.progress}
+                            </span>
+                        )}
                         <span className="inline-flex w-fit items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-emerald-700">
                             <CurrentStatusIcon className="h-4 w-4" />
                             {order.status}
@@ -272,6 +300,13 @@ export default function OrderDetailsClient({ orderId }: OrderDetailsClientProps)
                     <div className="mt-4 flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
                         <XCircle className="h-5 w-5" />
                         <p className="text-sm font-medium">This order has been cancelled.</p>
+                    </div>
+                ) : order.status === "PARTIALLY_CONFIRMED" ? (
+                    <div className="mt-4 flex items-center gap-3 rounded-xl border border-blue-200 bg-blue-50 p-4 text-blue-700">
+                        <Package className="h-5 w-5" />
+                        <p className="text-sm font-medium">
+                            {sellerProgress.confirmed} of {sellerProgress.total} sellers confirmed. We're waiting on the other seller(s).
+                        </p>
                     </div>
                 ) : (
                     <ol className="mt-5 grid gap-4">
@@ -331,8 +366,19 @@ export default function OrderDetailsClient({ orderId }: OrderDetailsClientProps)
                                                 <Package className="h-5 w-5 text-emerald-400" />
                                             )}
                                         </div>
-                                        <div>
-                                            <p className="text-sm font-semibold text-foreground">{item.medicine?.name || "Medicine"}</p>
+                                        <div className="flex-1">
+                                            <div className="flex items-center justify-between gap-2">
+                                                <div>
+                                                    <p className="text-sm font-semibold text-foreground">{item.medicine?.name || "Medicine"}</p>
+                                                    <p className="text-[10px] text-muted-foreground">Seller: {item.medicine?.seller?.name || "Unknown Seller"}</p>
+                                                </div>
+                                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${item.status === 'DELIVERED' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' :
+                                                    item.status === 'CANCELLED' ? 'bg-red-50 text-red-700 border-red-100' :
+                                                        'bg-blue-50 text-blue-700 border-blue-100'
+                                                    }`}>
+                                                    {item.status}
+                                                </span>
+                                            </div>
                                             <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
                                         </div>
                                     </div>

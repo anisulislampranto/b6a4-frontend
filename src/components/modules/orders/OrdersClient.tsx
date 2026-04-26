@@ -13,6 +13,7 @@ import PaymentStatusBadge from "./PaymentStatusBadge";
 
 const statusConfig: Record<OrderStatus, { icon: typeof Clock; color: string; bg: string; border: string }> = {
     PENDING: { icon: Clock, color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-100" },
+    PARTIALLY_CONFIRMED: { icon: Package, color: "text-blue-500", bg: "bg-blue-50", border: "border-blue-100" },
     CONFIRMED: { icon: Package, color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-100" },
     SHIPPED: { icon: Truck, color: "text-indigo-600", bg: "bg-indigo-50", border: "border-indigo-100" },
     DELIVERED: { icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-100" },

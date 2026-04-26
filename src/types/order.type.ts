@@ -2,6 +2,7 @@ import { MedicineWithRelations } from "./medicine.type";
 
 export const ORDER_STATUS_VALUES = [
     "PENDING",
+    "PARTIALLY_CONFIRMED",
     "CONFIRMED",
     "SHIPPED",
     "DELIVERED",
@@ -23,6 +24,7 @@ export interface OrderItem {
     medicine: Partial<MedicineWithRelations>;
     quantity: number;
     price: number;
+    status: OrderStatus;
 }
 
 export interface Order {
