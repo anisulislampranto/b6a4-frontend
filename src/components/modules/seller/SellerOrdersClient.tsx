@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import PaymentStatusBadge from "../orders/PaymentStatusBadge";
 import { ORDER_STATUS_VALUES, type Order, type OrderStatus } from "@/types/order.type";
 
 const statusOptions: OrderStatus[] = [...ORDER_STATUS_VALUES];
@@ -90,7 +91,7 @@ export default function SellerOrdersClient() {
             setOrders((prev) =>
                 prev.map((o) =>
                     o.id === order.id
-                        ? { ...o, status: nextStatus }
+                        ? { ...o, ...data.data }
                         : o
                 )
             );
@@ -225,9 +226,12 @@ export default function SellerOrdersClient() {
                                         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Order ID</p>
                                         <p className="font-mono text-sm font-semibold text-foreground">{order.id}</p>
                                     </div>
-                                    <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
-                                        {order.status}
-                                    </span>
+                                    <div className="flex flex-wrap gap-2 items-center">
+                                        <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+                                            {order.status}
+                                        </span>
+                                        <PaymentStatusBadge status={order.paymentStatus} />
+                                    </div>
                                 </div>
 
                                 <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
@@ -253,7 +257,15 @@ export default function SellerOrdersClient() {
                                     <div className="mt-2 space-y-2">
                                         {order.items.map((item) => (
                                             <div key={item.id} className="flex items-center justify-between text-sm">
-                                                <span className="font-medium text-foreground">{item.medicine?.name || "Medicine"}</span>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="font-medium text-foreground">{item.medicine?.name || "Medicine"}</span>
+                                                    <span className={`text-[10px] font-bold px-1.5 py-0 rounded border ${item.status === 'DELIVERED' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' :
+                                                            item.status === 'CANCELLED' ? 'bg-red-50 text-red-700 border-red-100' :
+                                                                'bg-blue-50 text-blue-700 border-blue-100'
+                                                        }`}>
+                                                        {item.status}
+                                                    </span>
+                                                </div>
                                                 <span className="text-muted-foreground">
                                                     Qty {item.quantity} x ${item.price.toFixed(2)}
                                                 </span>
@@ -264,7 +276,7 @@ export default function SellerOrdersClient() {
 
                                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
                                     <div className="space-y-1.5">
-                                        <Label>Update Status</Label>
+                                        <Label>Update My Items</Label>
                                         <select
                                             value={statusDraft[order.id] || order.status}
                                             onChange={(e) =>

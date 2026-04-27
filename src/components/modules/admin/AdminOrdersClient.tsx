@@ -6,6 +6,7 @@ import { ORDER_STATUS_VALUES, type Order, type OrderStatus } from "@/types/order
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import PaymentStatusBadge from "../orders/PaymentStatusBadge";
 
 const statusOptions: OrderStatus[] = [...ORDER_STATUS_VALUES];
 
@@ -129,9 +130,12 @@ export default function AdminOrdersClient() {
                                         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Order ID</p>
                                         <p className="font-mono text-sm font-semibold text-foreground">{order.id}</p>
                                     </div>
-                                    <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
-                                        {order.status}
-                                    </span>
+                                    <div className="flex flex-wrap gap-2 items-center">
+                                        <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+                                            {order.status}
+                                        </span>
+                                        <PaymentStatusBadge status={order.paymentStatus} />
+                                    </div>
                                 </div>
 
                                 <div className="grid grid-cols-1 gap-3 md:grid-cols-3">

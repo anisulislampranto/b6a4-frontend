@@ -5,13 +5,15 @@ import SafeImage from "@/components/ui/SafeImage";
 import { orderService } from "@/services/order.service";
 import type { Order, OrderStatus } from "@/types/order.type";
 import { Card, CardContent } from "@/components/ui/card";
-import { Package, Clock, Truck, CheckCircle2, XCircle, ShoppingBag } from "lucide-react";
+import { Package, Clock, Truck, CheckCircle2, XCircle, ShoppingBag, CreditCard } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import PaymentStatusBadge from "./PaymentStatusBadge";
 
 const statusConfig: Record<OrderStatus, { icon: typeof Clock; color: string; bg: string; border: string }> = {
     PENDING: { icon: Clock, color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-100" },
+    PARTIALLY_CONFIRMED: { icon: Package, color: "text-blue-500", bg: "bg-blue-50", border: "border-blue-100" },
     CONFIRMED: { icon: Package, color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-100" },
     SHIPPED: { icon: Truck, color: "text-indigo-600", bg: "bg-indigo-50", border: "border-indigo-100" },
     DELIVERED: { icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-100" },
@@ -148,6 +150,12 @@ export default function OrdersClient() {
                                                 <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                                                     {new Date(order.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium' })}
                                                 </span>
+                                                <span className="text-[10px] font-bold text-muted-foreground/60">•</span>
+                                                <PaymentStatusBadge
+                                                    status={order.paymentStatus}
+                                                    className="px-2 py-0.5 text-[9px]"
+                                                    iconSize={10}
+                                                />
                                             </div>
                                             <h3 className="text-sm font-black text-foreground uppercase truncate tracking-tight">
                                                 {order.items.map(i => i.medicine?.name).join(", ")}

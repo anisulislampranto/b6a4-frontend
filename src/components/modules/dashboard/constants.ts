@@ -10,6 +10,7 @@ export const DASHBOARD_RANGE_OPTIONS = [
 export const STATUS_COLORS: Record<OrderStatus, string> = {
   PENDING: "#d97706",
   CONFIRMED: "#2563eb",
+  PARTIALLY_CONFIRMED: "#FFFF00",
   SHIPPED: "#4f46e5",
   DELIVERED: "#059669",
   CANCELLED: "#dc2626",
