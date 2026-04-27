@@ -4,7 +4,7 @@ import Link from "next/link";
 import SafeImage from "@/components/ui/SafeImage";
 import { useEffect, useMemo, useState } from "react";
 import { orderService } from "@/services/order.service";
-import { ORDER_STATUS_VALUES, type Order, type OrderStatus } from "@/types/order.type";
+import { ORDER_STATUS_VALUES, OrderItem, type Order, type OrderStatus } from "@/types/order.type";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Clock, Package, Truck, CheckCircle2, XCircle, CircleDot } from "lucide-react";
