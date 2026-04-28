@@ -1,4 +1,5 @@
 import type { Brand } from "./brand.type";
+import type { User } from "./user.type";
 import type { Category } from "./category.type";
 
 export interface Medicine {
@@ -19,4 +20,5 @@ export interface Medicine {
 export interface MedicineWithRelations extends Medicine {
     category: Category;
     brand: Brand;
+    seller: User;
 }

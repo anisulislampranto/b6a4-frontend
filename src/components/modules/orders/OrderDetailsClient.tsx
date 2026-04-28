@@ -4,7 +4,7 @@ import Link from "next/link";
 import SafeImage from "@/components/ui/SafeImage";
 import { useEffect, useMemo, useState } from "react";
 import { orderService } from "@/services/order.service";
-import { ORDER_STATUS_VALUES, OrderItem, type Order, type OrderStatus } from "@/types/order.type";
+import { ORDER_STATUS_VALUES, type OrderItem, type Order, type OrderStatus } from "@/types/order.type";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Clock, Package, Truck, CheckCircle2, XCircle, CircleDot } from "lucide-react";
@@ -305,7 +305,7 @@ export default function OrderDetailsClient({ orderId }: OrderDetailsClientProps)
                     <div className="mt-4 flex items-center gap-3 rounded-xl border border-blue-200 bg-blue-50 p-4 text-blue-700">
                         <Package className="h-5 w-5" />
                         <p className="text-sm font-medium">
-                            {sellerProgress.confirmed} of {sellerProgress.total} sellers confirmed. We're waiting on the other seller(s).
+                            {sellerProgress.confirmed} of {sellerProgress.total} sellers confirmed. We&apos;re waiting on the other seller(s).
                         </p>
                     </div>
                 ) : (
