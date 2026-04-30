@@ -145,7 +145,7 @@ export default function CheckoutClient() {
                                                     </div>
                                                 </div>
 
-                                                <div
+                                                {/* <div
                                                     onClick={() => field.handleChange("STRIPE")}
                                                     className={`cursor-pointer flex items-center gap-3 p-4 rounded-2xl border-2 transition-all ${field.state.value === "STRIPE"
                                                         ? "border-emerald-600 bg-emerald-50"
@@ -160,7 +160,7 @@ export default function CheckoutClient() {
                                                         <p className="text-sm font-bold">Stripe Payment</p>
                                                         <p className="text-xs opacity-80">Pay securely using your credit card.</p>
                                                     </div>
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </div>
                                     )}

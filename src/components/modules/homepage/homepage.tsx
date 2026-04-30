@@ -26,13 +26,13 @@ export default function Homepage() {
                         </p>
                         <div className="flex flex-col justify-center gap-3 sm:flex-row sm:gap-4 lg:justify-start">
                             <Button className="bg-emerald-600 hover:bg-emerald-700">Get Started</Button>
-                            <Button
+                            {/* <Button
                                 variant="outline"
                                 className="border-emerald-600 text-emerald-700 hover:bg-emerald-50"
                                 onClick={() => setPrescriptionModalOpen(true)}
                             >
                                 Upload Prescription
-                            </Button>
+                            </Button> */}
                         </div>
                         <div className="mt-8 grid grid-cols-3 gap-3 text-left">
                             <div className="rounded-2xl border border-border/70 bg-white/80 px-3 py-3 shadow-sm">

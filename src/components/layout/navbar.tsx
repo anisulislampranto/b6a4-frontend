@@ -192,7 +192,7 @@ const Navbar = ({
           </div>
           <div className="flex items-center gap-4">
             <Sheet open={notificationsOpen} onOpenChange={setNotificationsOpen}>
-              <SheetTrigger asChild>
+              {/* <SheetTrigger asChild>
                 <button
                   type="button"
                   className="relative group inline-flex items-center justify-center rounded-xl p-2 transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/30"
@@ -206,19 +206,19 @@ const Navbar = ({
                     </span>
                   ) : null}
                 </button>
-              </SheetTrigger>
+              </SheetTrigger> */}
               <SheetContent className="overflow-y-hidden border-l border-border/70 px-5 sm:max-w-md">
                 <SheetHeader className="px-0">
                   <SheetTitle className="text-base">Activity</SheetTitle>
                 </SheetHeader>
-                <div className="h-[calc(100vh-96px)] pb-6">
+                {/* <div className="h-[calc(100vh-96px)] pb-6">
                   <NotificationsPanel
                     open={notificationsOpen}
                     refreshKey={notificationRefreshKey}
                     onUnreadCountChange={setNotificationUnreadCount}
                     onNavigate={() => setNotificationsOpen(false)}
                   />
-                </div>
+                </div> */}
               </SheetContent>
             </Sheet>
 
@@ -294,7 +294,7 @@ const Navbar = ({
             {/* Right side (Cart + Menu) */}
             <div className="flex items-center gap-2">
               <Sheet open={notificationsOpen} onOpenChange={setNotificationsOpen}>
-                <SheetTrigger asChild>
+                {/* <SheetTrigger asChild>
                   <button
                     type="button"
                     className="relative group inline-flex items-center justify-center rounded-xl p-2 transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/30"
@@ -308,9 +308,9 @@ const Navbar = ({
                       </span>
                     ) : null}
                   </button>
-                </SheetTrigger>
+                </SheetTrigger> */}
                 <SheetContent className="overflow-y-hidden border-l border-border/70 px-5 sm:max-w-md">
-                  <SheetHeader className="pl-0">
+                  {/* <SheetHeader className="pl-0">
                     <SheetTitle className="text-base">Activity</SheetTitle>
                   </SheetHeader>
                   <div className="h-[calc(100vh-96px)] pb-6">
@@ -320,7 +320,7 @@ const Navbar = ({
                       onUnreadCountChange={setNotificationUnreadCount}
                       onNavigate={() => setNotificationsOpen(false)}
                     />
-                  </div>
+                  </div> */}
                 </SheetContent>
               </Sheet>
 
