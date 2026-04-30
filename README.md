@@ -11,39 +11,49 @@ Next.js (App Router) frontend for MediStore, an OTC medicine e-commerce platform
 - Next.js App Router + TypeScript
 - Tailwind CSS
 - Redux Toolkit + redux-persist (cart)
-- Better Auth client (sessions)
-- Socket.IO client (real-time notifications)
+- Better Auth (sessions)
+- Socket.IO client (real-time notifications support)
+- tesseract.js (OCR utilities used by prescription modal component)
 
 ## Features
 
-- Homepage with hero + sections, responsive UI
+- Responsive homepage UI
 - Shop: browse + filter + debounced search
 - Medicine details page
-- Cart + checkout (Cash on Delivery)
+- Cart (persisted) + checkout (Cash on Delivery)
+- Checkout can redirect to a hosted payment page when backend returns `payment_url` (payment UI option is currently hidden in `CheckoutClient.tsx`)
 - Orders list + order details + review flow (from delivered order items)
 - Seller: inventory + add medicine + seller orders status updates
 - Admin: users + orders + categories + brands
 - Role-aware analytics dashboard (customer/seller/admin) with charts
-- Notifications: bell icon + offcanvas panel + unread badge (real-time)
+- Notifications panel + unread counting (Socket.IO listeners are wired; navbar trigger may be disabled depending on current UI)
+- (WIP/Optional) Prescription OCR modal component exists, but the homepage trigger button may be commented out
 
 ## Environment Variables
 
 Create `b6a4-frontend/.env`:
 
 ```env
-BACKEND_URL=http://localhost:5000/api
+# Server-only
+BACKEND_URL=http://localhost:5000
 FRONTEND_URL=http://localhost:3000/
 
+# Server-side fetch (App Router / server components)
 API_URL=http://localhost:5000/api
+# Better Auth server endpoint (used by server-side session check)
 AUTH_URL=http://localhost:5000/api/auth
 
-NEXT_PUBLIC_TEST=test-value
+# Client + Next rewrite proxy
 NEXT_PUBLIC_API_URL=http://localhost:5000/api
+NEXT_PUBLIC_AUTH_URL=http://localhost:5000/api/auth
+
+# Required by env schema (can be any string)
+NEXT_PUBLIC_TEST=test-value
 ```
 
 Notes:
-- Server-side fetches use `API_URL` (not `NEXT_PUBLIC_API_URL`).
-- Client-side services use `NEXT_PUBLIC_API_URL` (via `src/services/api-base.ts`).
+- Client-side services call `API_BASE_URL = "/api"` and Next.js rewrites `/api/*` to `NEXT_PUBLIC_API_URL/*` (see `next.config.ts`).
+- Server components/pages use `process.env.API_URL` for server-side `fetch()` calls.
 
 ## Install
 
@@ -124,7 +134,7 @@ Admin:
 
 ## Notifications (Real-time)
 
-- Bell icon in navbar opens an offcanvas panel.
-- New events appear in real-time using Socket.IO when backend supports websockets.
+- Socket.IO listeners are implemented for `notification:new` and `notification:read-all` events.
+- The notifications UI is implemented in `src/components/modules/notifications/NotificationsPanel.tsx`.
 
 If your backend is deployed as serverless without websockets, notifications will still work via manual refresh but realtime events require a persistent backend host.
